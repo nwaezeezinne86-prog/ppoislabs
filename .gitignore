@@ -13,3 +13,5 @@ venv/
 *.swp
 .DS_Store
 docs/_build/
+lab1/docs/_build/
+_build/
