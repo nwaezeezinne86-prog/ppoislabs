@@ -1,2 +1,6 @@
-# ppoislabs
-This is where every lab work under the course "ppois" will be done and also the project will be done
+# OOP Labs
+
+Laboratory work for the Object-Oriented Programming course.
+
+## Repository layout
+

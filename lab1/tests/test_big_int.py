@@ -180,3 +180,161 @@ class TestConversion:
         a = BigInt("12345678901234567890")
         b = a.copy()
         assert a == b and a is not b
+
+
+class TestEdgeCases:
+    def test_empty_string_raises_value_error(self):
+        with pytest.raises(ValueError):
+            BigInt("")
+
+    def test_whitespace_only_string_raises_value_error(self):
+        with pytest.raises(ValueError):
+            BigInt("   ")
+
+    def test_zero_str_after_sign(self):
+        assert str(BigInt("-0")) == "0"
+        assert str(BigInt("+0")) == "0"
+
+    def test_eq_unsupported_type_returns_not_implemented(self):
+        assert BigInt(1).__eq__(None) is NotImplemented
+
+    def test_truediv_uses_floordiv(self):
+        assert BigInt(9) / BigInt(2) == BigInt(4)
+
+    def test_truediv_by_zero_raises(self):
+        with pytest.raises(ZeroDivisionError):
+            BigInt(1) / BigInt(0)
+
+    def test_floordiv_negative_divisor(self):
+        assert BigInt(10) // BigInt(-3) == BigInt(-3)
+
+    def test_mod_negative_divisor(self):
+        assert BigInt(10) % BigInt(-3) == BigInt(1)
+
+    def test_add_other_type_returns_not_implemented(self):
+        assert BigInt(1).__add__("x") is NotImplemented
+
+    def test_sub_other_type_returns_not_implemented(self):
+        assert BigInt(1).__sub__("x") is NotImplemented
+
+    def test_mul_other_type_returns_not_implemented(self):
+        assert BigInt(1).__mul__("x") is NotImplemented
+
+    def test_floordiv_other_type_returns_not_implemented(self):
+        assert BigInt(1).__floordiv__("x") is NotImplemented
+
+    def test_mod_other_type_returns_not_implemented(self):
+        assert BigInt(1).__mod__("x") is NotImplemented
+
+    def test_str_of_zero(self):
+        assert str(BigInt(0)) == "0"
+
+    def test_lt_same_length_different_digits(self):
+        assert BigInt(19) < BigInt(21)
+        assert BigInt(-19) > BigInt(-21)
+
+    def test_lt_with_int(self):
+        assert BigInt(3) < 5
+
+    def test_le_with_int(self):
+        assert BigInt(5) <= 5
+
+    def test_gt_with_int(self):
+        assert BigInt(5) > 3
+
+    def test_ge_with_int(self):
+        assert BigInt(5) >= 5
+
+    def test_div_mod_signs(self):
+        assert BigInt(-10) // BigInt(3) == BigInt(-4)
+        assert BigInt(-10) % BigInt(3) == BigInt(-1)
+        assert BigInt(10) // BigInt(-3) == BigInt(-4)
+        assert BigInt(10) % BigInt(-3) == BigInt(1)
+
+    def test_mul_negative_by_negative(self):
+        assert BigInt(-4) * BigInt(-5) == BigInt(20)
+
+    def test_sub_same_value_returns_zero(self):
+        assert BigInt(7) - BigInt(7) == BigInt(0)
+
+
+class TestEdgeCases:
+    def test_str_with_plus_sign_keeps_positive(self):
+        assert BigInt("+0") == BigInt(0)
+
+    def test_str_with_leading_zeros(self):
+        assert str(BigInt("0000")) == "0"
+        assert str(BigInt("-0000")) == "0"
+
+    def test_str_sign_then_non_digit(self):
+        with pytest.raises(ValueError):
+            BigInt("+abc")
+
+    def test_iadd_with_int(self):
+        a = BigInt(5)
+        a += 7
+        assert a == BigInt(12)
+
+    def test_isub_with_int(self):
+        a = BigInt(5)
+        a -= 7
+        assert a == BigInt(-2)
+
+    def test_imul_with_int(self):
+        a = BigInt(5)
+        a *= 3
+        assert a == BigInt(15)
+
+    def test_ifloordiv_with_int(self):
+        a = BigInt(20)
+        a //= 6
+        assert a == BigInt(3)
+
+    def test_truediv_by_zero(self):
+        with pytest.raises(ZeroDivisionError):
+            BigInt(1) / BigInt(0)
+
+    def test_mod_by_negative(self):
+        assert BigInt(7) % BigInt(-3) == BigInt(1)
+
+    def test_sub_returns_notimplemented_for_str(self):
+        assert BigInt(1).__sub__("x") is NotImplemented
+
+    def test_mul_returns_notimplemented_for_str(self):
+        assert BigInt(1).__mul__("x") is NotImplemented
+
+    def test_add_returns_notimplemented_for_str(self):
+        assert BigInt(1).__add__("x") is NotImplemented
+
+    def test_floordiv_returns_notimplemented_for_str(self):
+        assert BigInt(1).__floordiv__("x") is NotImplemented
+
+    def test_mod_returns_notimplemented_for_str(self):
+        assert BigInt(1).__mod__("x") is NotImplemented
+
+    def test_str_with_trailing_zeros(self):
+        # covers _strip_zeros path with multiple digits
+        assert str(BigInt("1000")) == "1000"
+        assert str(BigInt("1000") - BigInt("1000")) == "0"
+
+    def test_sub_equal_abs(self):
+        assert BigInt(5) - BigInt(5) == BigInt(0)
+        assert BigInt(-5) - BigInt(-5) == BigInt(0)
+
+    def test_copy_independent_negative(self):
+        a = BigInt(-42)
+        b = a.copy()
+        b.pre_increment()
+        assert a == BigInt(-42)
+        assert b == BigInt(-41)
+
+
+class TestLastMissingLines:
+    def test_mul_by_str_returns_notimplemented(self):
+        assert BigInt(3).__mul__("oops") is NotImplemented
+
+    def test_neg_of_zero(self):
+        assert -BigInt(0) == BigInt(0)
+
+    def test_add_return_notimplemented_directly(self):
+        assert BigInt(3).__add__([1, 2]) is NotImplemented

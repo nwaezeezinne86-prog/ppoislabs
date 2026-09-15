@@ -137,3 +137,93 @@ class TestSerialization:
         m = PostMachine(["!"])
         assert "PostMachine" in repr(m)
         assert "halted" in str(m)
+
+
+class TestEdgeCases:
+    def test_load_program_invalid_type(self):
+        with pytest.raises(PostMachineError):
+            PostMachine(["V", "1"])
+
+    def test_tape_write_negative(self):
+        with pytest.raises(PostMachineError):
+            Tape().write(-1)
+
+    def test_tape_load_invalid_value(self):
+        with pytest.raises(PostMachineError):
+            Tape().load([5])
+
+    def test_program_property_returns_copy(self):
+        m = PostMachine(["V", "!"])
+        p1 = m.program
+        p1.clear()
+        assert m.program == ["V", "!"]
+
+    def test_eq_with_different_program(self):
+        a = PostMachine(["!"])
+        b = PostMachine(["V", "!"])
+        assert a != b
+
+    def test_eq_with_different_pc(self):
+        a = PostMachine(["V", "!", "!"])
+        a.step()
+        b = PostMachine(["V", "!", "!"])
+        assert a != b
+
+    def test_eq_with_different_halted(self):
+        a = PostMachine(["!"])
+        b = PostMachine(["!"])
+        a.run()
+        assert a != b
+
+    def test_eq_with_different_tape(self):
+        a = PostMachine(["!"])
+        b = PostMachine(["!"])
+        a.tape.write(1)
+        assert a != b
+
+    def test_copy_of_negative_head(self):
+        m = PostMachine(["L", "V", "!"])
+        m.run()
+        c = m.copy()
+        assert c == m
+
+    def test_reset_keeps_tape_contents(self):
+        m = PostMachine(["V", "!"])
+        m.run()
+        tape_before = dict(m.tape.cells)
+        m.reset()
+        assert m.tape.cells == tape_before
+        assert m.tape.head == 0
+
+    def test_from_string_ignores_bad_lines(self):
+        text = "junk line without colon\nPROGRAM: !\nHEAD: 0\nPC: 0\nHALTED: 0"
+        m = PostMachine.from_string(text)
+        assert m.program == ["!"]
+
+    def test_str_contains_tape(self):
+        m = PostMachine(["!"])
+        assert "tape" in str(m)
+
+    def test_unknown_command_marker(self):
+        m = PostMachine(["!"])
+        # Manually inject an invalid command to exercise the else branch
+        m._program = ["Z"]
+        with pytest.raises(PostMachineError):
+            m.step()
+
+
+class TestLastMissingLinesPM:
+    def test_load_program_error_message_for_bad_command(self):
+        with pytest.raises(PostMachineError) as exc_info:
+            PostMachine(["V", "BAD"])
+        assert "line 1" in str(exc_info.value)
+
+    def test_tape_write_error_message(self):
+        with pytest.raises(PostMachineError) as exc_info:
+            Tape().write(7)
+        assert "7" in str(exc_info.value)
+
+    def test_tape_load_error_message(self):
+        with pytest.raises(PostMachineError) as exc_info:
+            Tape().load([1, 9])
+        assert "9" in str(exc_info.value)
