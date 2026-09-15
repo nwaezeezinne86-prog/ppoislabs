@@ -1,0 +1,9 @@
+[run]
+omit =
+    lab1/src/cli.py
+    lab1/src/__init__.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == "__main__":

@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, "feature/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint (flake8)
+        run: flake8 lab1/src --max-line-length=150 --extend-ignore=E203,W503
+
+      - name: Run tests with coverage
+        env:
+          PYTHONPATH: .
+        run: |
+          python -m pytest lab1/tests \
+            --cov=lab1/src \
+            --cov-report=term-missing \
+            --cov-fail-under=90
+
+      - name: Build documentation
+        run: |
+          cd lab1/docs
+          sphinx-build -b html . _build/html
+
+      - name: Package artifact
+        run: |
+          mkdir -p dist
+          cp -r lab1/src dist/
+          cd dist && zip -r ../lab1-src.zip src
+
+      - name: Upload artifact to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: lab1-src.zip
