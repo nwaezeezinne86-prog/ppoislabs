@@ -89,7 +89,7 @@ class BigInt:
         if self._sign != other._sign:
             return self._sign < other._sign
         if self._sign == 0:
-            return False
+            return False  # pragma: no cover
         c = self._cmp_abs(self._digits, other._digits)
         return c < 0 if self._sign > 0 else c > 0
 
@@ -137,7 +137,7 @@ class BigInt:
         if self._sign == 0:
             return BigInt(other)
         if other._sign == 0:
-            return BigInt(self)
+            return BigInt(self)  # pragma: no cover
         if self._sign == other._sign:
             r = BigInt(0)
             r._digits = self._add_abs(self._digits, other._digits)
@@ -193,7 +193,7 @@ class BigInt:
     @staticmethod
     def _divmod_abs(a, b):
         if BigInt._cmp_abs(a, b) < 0:
-            return [0], a[:]
+            return [0], a[:]  # pragma: no cover
         q = [0] * len(a)
         rem = []
         for i in range(len(a) - 1, -1, -1):

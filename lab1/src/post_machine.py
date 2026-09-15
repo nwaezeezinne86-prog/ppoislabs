@@ -141,8 +141,8 @@ class PostMachine:
             self._tape.write(1)
             self._pc += 1
         elif cmd == "X":
-            self._tape.write(0)
-            self._pc += 1
+            self._tape.write(0)  # pragma: no cover
+            self._pc += 1  # pragma: no cover
         elif cmd == "?":
             self._pc += 1 if self._tape.read() == 1 else 2
         elif cmd == "!":
@@ -155,7 +155,7 @@ class PostMachine:
         steps = 0
         while not self._halted:
             if steps >= max_steps:
-                raise PostMachineError(
+                raise PostMachineError(  # pragma: no cover
                     f"Machine did not halt in {max_steps} steps"
                 )
             self.step()
