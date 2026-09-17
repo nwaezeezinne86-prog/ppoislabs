@@ -75,6 +75,7 @@ class PostMachine:
     """
 
     COMMANDS = {"L", "R", "V", "X", "?", "!"}
+    DEFAULT_MAX_STEPS = 100_000
 
     def __init__(self, program: Optional[List[str]] = None) -> None:
         self._program: List[str] = []
@@ -150,7 +151,7 @@ class PostMachine:
         else:  # pragma: no cover
             raise PostMachineError(f"Unknown command: {cmd!r}")
 
-    def run(self, max_steps: int = 100_000) -> int:
+    def run(self, max_steps: int = DEFAULT_MAX_STEPS) -> int:
         """Run until halt. Returns the number of steps."""
         steps = 0
         while not self._halted:

@@ -4,6 +4,7 @@ from typing import Union
 
 __all__ = ["BigInt"]
 _DECIMAL_DIGITS = "0123456789"
+_BASE = 10
 
 
 class BigInt:
@@ -31,8 +32,8 @@ class BigInt:
         digits: list[int] = []
         n = abs(value)
         while n > 0:
-            digits.append(n % 10)
-            n //= 10
+            digits.append(n % _BASE)
+            n //= _BASE
         self._digits = digits or [0]
 
     def _from_str(self, value: str) -> None:
@@ -109,8 +110,8 @@ class BigInt:
             da = a[i] if i < len(a) else 0
             db = b[i] if i < len(b) else 0
             s = da + db + carry
-            result.append(s % 10)
-            carry = s // 10
+            result.append(s % _BASE)
+            carry = s // _BASE
         if carry:
             result.append(carry)
         return result
@@ -123,7 +124,7 @@ class BigInt:
             db = b[i] if i < len(b) else 0
             diff = da - db - borrow
             if diff < 0:
-                diff += 10
+                diff += _BASE
                 borrow = 1
             else:
                 borrow = 0
@@ -177,13 +178,13 @@ class BigInt:
             carry = 0
             for j, db in enumerate(other._digits):
                 cur = result[i + j] + da * db + carry
-                result[i + j] = cur % 10
-                carry = cur // 10
+                result[i + j] = cur % _BASE
+                carry = cur // _BASE
             k = i + len(other._digits)
             while carry:
                 cur = result[k] + carry
-                result[k] = cur % 10
-                carry = cur // 10
+                result[k] = cur % _BASE
+                carry = cur // _BASE
                 k += 1
         out = BigInt(0)
         out._digits = BigInt._strip_zeros(result)
