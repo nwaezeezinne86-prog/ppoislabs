@@ -67,7 +67,6 @@ class TestAllergenSet:
         assert hash(AllergenSet([Allergen.GLUTEN])) == hash(AllergenSet([Allergen.GLUTEN]))
 
     def test_str_empty(self):
-        assert AllergenSet().to_str() if False else True  # placeholder
         assert str(AllergenSet()) == "(no allergens)"
 
     def test_str_nonempty_sorted(self):
