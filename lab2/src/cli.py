@@ -1,4 +1,7 @@
-"""Console UI for the culinary domain. Fully decoupled from the domain layer."""
+"""Console UI for the culinary domain.
+
+Fully decoupled from the domain layer.
+"""
 from __future__ import annotations
 
 import sys

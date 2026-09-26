@@ -1,9 +1,9 @@
-"""Console UI for demonstrating BigInt and PostMachine.
+"""Console UI for Lab 1 (BigInt and PostMachine).
 
-The UI is fully separated from the implementation: the BigInt and
-PostMachine classes know nothing about this module.
+Fully decoupled from the domain layer.
 """
 from __future__ import annotations
+
 import sys
 from typing import List
 
