@@ -2,6 +2,8 @@
 omit =
     lab1/src/cli.py
     lab1/src/__init__.py
+    lab2/src/cli.py
+    lab2/src/__init__.py
 
 [report]
 exclude_lines =

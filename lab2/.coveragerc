@@ -1,0 +1,4 @@
+[run]
+omit =
+    lab2/src/cli.py
+    lab2/src/__init__.py
