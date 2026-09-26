@@ -31,7 +31,7 @@ class Money:
     @classmethod
     def from_major(cls, amount: float, currency: str = CURRENCY_RUB) -> "Money":
         """Create Money from a value in the major unit (e.g. 12.34 RUB)."""
-        return cls(round(amount * MINOR_UNITS_PER_MAJOR), currency)
+        return cls(int(amount * MINOR_UNITS_PER_MAJOR + 0.5), currency)
 
     def as_major(self) -> float:
         """Return the amount as a float in the major unit."""
