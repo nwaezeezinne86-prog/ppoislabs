@@ -4,16 +4,15 @@ from __future__ import annotations
 import sys
 from datetime import date, time
 
-from .allergens import Allergen, AllergenSet
-from .business import Branch, Promotion, Restaurant, Review, Table
-from .dishes import Course, Dish, Menu, MenuPlanner, Portion
-from .education import Course as EduCourse, CulinarySchool, Lesson, Workshop
+from .business import Branch, Restaurant, Review, Table
+from .dishes import Menu, MenuPlanner
+from .education import Course as EduCourse, CulinarySchool
 from .exceptions import CulinaryException
-from .ingredients import Fish, Meat, Spice, Vegetable
+from .ingredients import Vegetable
 from .money import Money
-from .people import Chef, Cook, Customer, Instructor, Student, Waiter
+from .people import Chef, Customer, Student, Waiter
 from .recipes import Recipe, RecipeBook, RecipeIngredient, RecipeStep
-from .technique import Bake, Boil, Fry, Grill, Mix, Steam
+from .technique import Boil
 from .units import Quantity, Unit
 
 
