@@ -140,7 +140,7 @@ class StorageUnit:
         )
 
     def _total_kg(self) -> float:
-        return sum(l.quantity.amount / KILOGRAMS_PER_GRAM for l in self._lots)
+        return sum(lot.quantity.amount / KILOGRAMS_PER_GRAM for lot in self._lots)
 
     def utilization(self) -> float:
         """Return utilization 0-1."""
@@ -150,7 +150,7 @@ class StorageUnit:
 
     def expired_lots(self, today: date) -> list[IngredientLot]:
         """Return expired lots in this unit."""
-        return [l for l in self._lots if l.is_expired(today)]
+        return [lot for lot in self._lots if lot.is_expired(today)]
 
     def purge_expired(self, today: date) -> int:
         """Remove expired lots; return the number removed."""
