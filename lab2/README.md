@@ -14,33 +14,33 @@ A large-scale OOP project modelling a culinary / restaurant / catering platform.
 - [Run](#run)
 
 ## Layout
-lab2/
-├── src/
-│ ├── init.py
-│ ├── exceptions.py
-│ ├── money.py
-│ ├── units.py
-│ ├── allergens.py
-│ ├── ingredients.py
-│ ├── nutrition.py
-│ ├── technique.py
-│ ├── equipment.py
-│ ├── recipes.py
-│ ├── dishes.py
-│ ├── people.py
-│ ├── staff.py
-│ ├── supply.py
-│ ├── storage.py
-│ ├── business.py
-│ ├── education.py
-│ ├── analytics.py
-│ ├── kitchen.py
-│ └── cli.py
-├── tests/
-│ └── test_*.py
-└── docs/
-├── conf.py
-└── index.rst
+lab2
+src
+ init.py
+exceptions.py
+money.py
+ units.py
+ allergens.py
+ ingredients.py
+ nutrition.py
+ technique.py
+ equipment.py
+ recipes.py
+ dishes.py
+people.py
+ staff.py
+ supply.py
+ storage.py
+ business.py
+ education.py
+ analytics.py
+ kitchen.py
+ cli.py
+ tests
+ test_*.py
+ docs
+ conf.py
+ index.rst
 ## Requirements satisfied
 
 | Requirement | Minimum | Achieved |
