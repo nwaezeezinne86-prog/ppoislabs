@@ -1,12 +1,12 @@
 Lab1 - BigInt and Post Machine
 ==============================
 
-.. automodule:: big_int
+.. automodule:: lab1.src.big_int
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: post_machine
+.. automodule:: lab1.src.post_machine
    :members:
    :undoc-members:
    :show-inheritance:

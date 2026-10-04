@@ -2,7 +2,9 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../src"))
+DOCS_DIR = os.path.abspath(os.path.dirname(__file__))
+REPO_ROOT = os.path.abspath(os.path.join(DOCS_DIR, "..", ".."))
+sys.path.insert(0, REPO_ROOT)
 
 project = "Lab2 - Culinary Domain"
 author = "Zinne"

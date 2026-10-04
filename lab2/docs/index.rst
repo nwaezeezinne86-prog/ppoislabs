@@ -1,71 +1,70 @@
 Lab2 - Culinary Domain
 ======================
 
-.. automodule:: money
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: units
+.. automodule:: lab2.src.money
    :members:
    :undoc-members:
 
-.. automodule:: allergens
+.. automodule:: lab2.src.units
    :members:
    :undoc-members:
 
-.. automodule:: ingredients
+.. automodule:: lab2.src.allergens
    :members:
    :undoc-members:
 
-.. automodule:: nutrition
+.. automodule:: lab2.src.ingredients
    :members:
    :undoc-members:
 
-.. automodule:: technique
+.. automodule:: lab2.src.nutrition
    :members:
    :undoc-members:
 
-.. automodule:: equipment
+.. automodule:: lab2.src.technique
    :members:
    :undoc-members:
 
-.. automodule:: recipes
+.. automodule:: lab2.src.equipment
    :members:
    :undoc-members:
 
-.. automodule:: dishes
+.. automodule:: lab2.src.recipes
    :members:
    :undoc-members:
 
-.. automodule:: people
+.. automodule:: lab2.src.dishes
    :members:
    :undoc-members:
 
-.. automodule:: staff
+.. automodule:: lab2.src.people
    :members:
    :undoc-members:
 
-.. automodule:: supply
+.. automodule:: lab2.src.staff
    :members:
    :undoc-members:
 
-.. automodule:: storage
+.. automodule:: lab2.src.supply
    :members:
    :undoc-members:
 
-.. automodule:: business
+.. automodule:: lab2.src.storage
    :members:
    :undoc-members:
 
-.. automodule:: education
+.. automodule:: lab2.src.business
    :members:
    :undoc-members:
 
-.. automodule:: analytics
+.. automodule:: lab2.src.education
    :members:
    :undoc-members:
 
-.. automodule:: kitchen
+.. automodule:: lab2.src.analytics
+   :members:
+   :undoc-members:
+
+.. automodule:: lab2.src.kitchen
    :members:
    :undoc-members:
