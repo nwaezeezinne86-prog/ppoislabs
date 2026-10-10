@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Отчёт по лабораторной работе №2 &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+  <title>Лабораторная работа №2 — предметная область «Кулинария» &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
@@ -42,13 +42,11 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Отчёт по лабораторной работе №2</a><ul>
+<li><a class="reference internal" href="#">Лабораторная работа №2 — предметная область «Кулинария»</a><ul>
 <li><a class="reference internal" href="#id1">1. Цель работы</a></li>
-<li><a class="reference internal" href="#id2">2. Достигнутые показатели</a></li>
-<li><a class="reference internal" href="#id3">3. Выбранный язык и инструменты</a></li>
-<li><a class="reference internal" href="#id4">4. Структура проекта</a></li>
-<li><a class="reference internal" href="#id5">5. Архитектура предметной области</a><ul>
-<li><a class="reference internal" href="#id6">5.1. Базовые типы-значения</a><ul>
+<li><a class="reference internal" href="#id2">2. Достигнуто</a></li>
+<li><a class="reference internal" href="#id3">3. Инструменты</a></li>
+<li><a class="reference internal" href="#id4">4. Базовые типы</a><ul>
 <li><a class="reference internal" href="#lab2.src.money.Money"><code class="docutils literal notranslate"><span class="pre">Money</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.money.Money.amount_minor"><code class="docutils literal notranslate"><span class="pre">Money.amount_minor</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.money.Money.as_major"><code class="docutils literal notranslate"><span class="pre">Money.as_major()</span></code></a></li>
@@ -130,7 +128,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id7">5.2. Ингредиенты</a><ul>
+<li><a class="reference internal" href="#id5">5. Ингредиенты</a><ul>
 <li><a class="reference internal" href="#lab2.src.ingredients.Dairy"><code class="docutils literal notranslate"><span class="pre">Dairy</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.ingredients.Dairy.is_low_fat"><code class="docutils literal notranslate"><span class="pre">Dairy.is_low_fat()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.ingredients.Dairy.scaled_fat"><code class="docutils literal notranslate"><span class="pre">Dairy.scaled_fat()</span></code></a></li>
@@ -188,7 +186,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id8">5.3. Техники приготовления</a><ul>
+<li><a class="reference internal" href="#id6">6. Техники</a><ul>
 <li><a class="reference internal" href="#lab2.src.technique.Bake"><code class="docutils literal notranslate"><span class="pre">Bake</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.technique.Bake.apply"><code class="docutils literal notranslate"><span class="pre">Bake.apply()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.technique.Bake.lower_temperature"><code class="docutils literal notranslate"><span class="pre">Bake.lower_temperature()</span></code></a></li>
@@ -233,7 +231,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id9">5.4. Оборудование</a><ul>
+<li><a class="reference internal" href="#id7">7. Оборудование</a><ul>
 <li><a class="reference internal" href="#lab2.src.equipment.Blender"><code class="docutils literal notranslate"><span class="pre">Blender</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.equipment.Blender.describe"><code class="docutils literal notranslate"><span class="pre">Blender.describe()</span></code></a></li>
 </ul>
@@ -286,7 +284,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id10">5.5. Рецепты</a><ul>
+<li><a class="reference internal" href="#id8">8. Рецепты</a><ul>
 <li><a class="reference internal" href="#lab2.src.recipes.Recipe"><code class="docutils literal notranslate"><span class="pre">Recipe</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.recipes.Recipe.add_ingredient"><code class="docutils literal notranslate"><span class="pre">Recipe.add_ingredient()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.recipes.Recipe.add_step"><code class="docutils literal notranslate"><span class="pre">Recipe.add_step()</span></code></a></li>
@@ -346,7 +344,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id11">5.6. Блюда и меню</a><ul>
+<li><a class="reference internal" href="#id9">9. Блюда и меню</a><ul>
 <li><a class="reference internal" href="#lab2.src.dishes.Course"><code class="docutils literal notranslate"><span class="pre">Course</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.dishes.Course.KINDS"><code class="docutils literal notranslate"><span class="pre">Course.KINDS</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.dishes.Course.add_dish"><code class="docutils literal notranslate"><span class="pre">Course.add_dish()</span></code></a></li>
@@ -398,7 +396,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id12">5.7. Люди</a><ul>
+<li><a class="reference internal" href="#id10">10. Люди</a><ul>
 <li><a class="reference internal" href="#lab2.src.people.Bartender"><code class="docutils literal notranslate"><span class="pre">Bartender</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.people.Bartender.add_cocktail"><code class="docutils literal notranslate"><span class="pre">Bartender.add_cocktail()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.people.Bartender.can_mix"><code class="docutils literal notranslate"><span class="pre">Bartender.can_mix()</span></code></a></li>
@@ -479,7 +477,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13">5.8. Персонал</a><ul>
+<li><a class="reference internal" href="#id11">11. Персонал</a><ul>
 <li><a class="reference internal" href="#lab2.src.staff.Salary"><code class="docutils literal notranslate"><span class="pre">Salary</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.staff.Salary.add_bonus"><code class="docutils literal notranslate"><span class="pre">Salary.add_bonus()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.staff.Salary.add_deduction"><code class="docutils literal notranslate"><span class="pre">Salary.add_deduction()</span></code></a></li>
@@ -529,7 +527,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id14">5.9. Поставки</a><ul>
+<li><a class="reference internal" href="#id12">12. Поставки</a><ul>
 <li><a class="reference internal" href="#lab2.src.supply.Delivery"><code class="docutils literal notranslate"><span class="pre">Delivery</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.supply.Delivery.delivery_date"><code class="docutils literal notranslate"><span class="pre">Delivery.delivery_date</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.supply.Delivery.describe"><code class="docutils literal notranslate"><span class="pre">Delivery.describe()</span></code></a></li>
@@ -601,7 +599,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id15">5.10. Хранение</a><ul>
+<li><a class="reference internal" href="#id13">13. Хранение</a><ul>
 <li><a class="reference internal" href="#lab2.src.storage.Rack"><code class="docutils literal notranslate"><span class="pre">Rack</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.storage.Rack.add_weight"><code class="docutils literal notranslate"><span class="pre">Rack.add_weight()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.storage.Rack.can_hold"><code class="docutils literal notranslate"><span class="pre">Rack.can_hold()</span></code></a></li>
@@ -647,7 +645,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id16">5.11. Бизнес</a><ul>
+<li><a class="reference internal" href="#id14">14. Бизнес</a><ul>
 <li><a class="reference internal" href="#lab2.src.business.Branch"><code class="docutils literal notranslate"><span class="pre">Branch</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.business.Branch.add_review"><code class="docutils literal notranslate"><span class="pre">Branch.add_review()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.business.Branch.add_table"><code class="docutils literal notranslate"><span class="pre">Branch.add_table()</span></code></a></li>
@@ -711,7 +709,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id17">5.12. Образование</a><ul>
+<li><a class="reference internal" href="#id15">15. Образование</a><ul>
 <li><a class="reference internal" href="#lab2.src.education.Certificate"><code class="docutils literal notranslate"><span class="pre">Certificate</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.education.Certificate.age_days"><code class="docutils literal notranslate"><span class="pre">Certificate.age_days()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.education.Certificate.course_name"><code class="docutils literal notranslate"><span class="pre">Certificate.course_name</span></code></a></li>
@@ -771,7 +769,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id18">5.13. Аналитика</a><ul>
+<li><a class="reference internal" href="#id16">16. Аналитика</a><ul>
 <li><a class="reference internal" href="#lab2.src.analytics.CostCalculator"><code class="docutils literal notranslate"><span class="pre">CostCalculator</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.analytics.CostCalculator.base_cost"><code class="docutils literal notranslate"><span class="pre">CostCalculator.base_cost()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.analytics.CostCalculator.compare"><code class="docutils literal notranslate"><span class="pre">CostCalculator.compare()</span></code></a></li>
@@ -855,7 +853,7 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id19">5.14. Кухня</a><ul>
+<li><a class="reference internal" href="#id17">17. Кухня</a><ul>
 <li><a class="reference internal" href="#lab2.src.kitchen.Kitchen"><code class="docutils literal notranslate"><span class="pre">Kitchen</span></code></a><ul>
 <li><a class="reference internal" href="#lab2.src.kitchen.Kitchen.add_station"><code class="docutils literal notranslate"><span class="pre">Kitchen.add_station()</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.kitchen.Kitchen.all_tasks"><code class="docutils literal notranslate"><span class="pre">Kitchen.all_tasks()</span></code></a></li>
@@ -909,9 +907,7 @@
 </li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id20">6. Исключения</a><ul>
+<li><a class="reference internal" href="#id18">18. Исключения</a><ul>
 <li><a class="reference internal" href="#lab2.src.exceptions.AllergenConflictError"><code class="docutils literal notranslate"><span class="pre">AllergenConflictError</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.exceptions.CertificateExpiredError"><code class="docutils literal notranslate"><span class="pre">CertificateExpiredError</span></code></a></li>
 <li><a class="reference internal" href="#lab2.src.exceptions.CulinaryException"><code class="docutils literal notranslate"><span class="pre">CulinaryException</span></code></a></li>
@@ -933,14 +929,8 @@
 <li><a class="reference internal" href="#lab2.src.exceptions.TableNotFoundError"><code class="docutils literal notranslate"><span class="pre">TableNotFoundError</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id21">7. Консольный интерфейс</a></li>
-<li><a class="reference internal" href="#id22">8. Тестирование</a></li>
-<li><a class="reference internal" href="#id23">9. Документация</a></li>
-<li><a class="reference internal" href="#id24">10. Непрерывная интеграция и доставка</a></li>
-<li><a class="reference internal" href="#git">11. Рабочий процесс Git</a></li>
-<li><a class="reference internal" href="#id25">12. Результаты</a></li>
-<li><a class="reference internal" href="#id26">13. Воспроизведение проекта</a></li>
-<li><a class="reference internal" href="#id27">14. Заключение</a></li>
+<li><a class="reference internal" href="#id19">19. Консольный интерфейс</a></li>
+<li><a class="reference internal" href="#ci-cd">20. Тестирование и CI/CD</a></li>
 </ul>
 </li>
 </ul>
@@ -959,7 +949,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Отчёт по лабораторной работе №2</li>
+      <li class="breadcrumb-item active">Лабораторная работа №2 — предметная область «Кулинария»</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -970,141 +960,33 @@
            <div itemprop="articleBody">
              
   <section id="o2">
-<h1>Отчёт по лабораторной работе №2<a class="headerlink" href="#o2" title="Link to this heading"></a></h1>
-<p><strong>Министерство образования Республики Беларусь</strong>
-<strong>Учреждение образования «Белорусский государственный университет информатики и радиоэлектроники»</strong>
-Факультет информационных технологий и управления
-Кафедра интеллектуальных информационных технологий</p>
+<h1>Лабораторная работа №2 — предметная область «Кулинария»<a class="headerlink" href="#o2" title="Link to this heading"></a></h1>
 <p><strong>Дисциплина:</strong> ППОИС
-<strong>Лабораторная работа №2:</strong> «Крупный ООП-проект»</p>
-<p><strong>Выполнил:</strong> [ФИО], гр. [номер группы]
-<strong>Предметная область:</strong> Кулинария
-<strong>Проверил:</strong> [ФИО преподавателя]
-<strong>Дата:</strong> [YYYY-MM-DD]</p>
+<strong>Выполнил:</strong> [ФИО], гр. [группа]
+<strong>Проверил:</strong> [ФИО преподавателя]</p>
 <section id="id1">
 <h2>1. Цель работы<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
-<p>Спроектировать и реализовать крупный объектно-ориентированный проект для
-индивидуально назначенной предметной области, удовлетворяющий следующим
-количественным требованиям:</p>
-<ul class="simple">
-<li><p>не менее 50 классов;</p></li>
-<li><p>не менее 150 полей суммарно по всем классам;</p></li>
-<li><p>не менее 100 уникальных поведений;</p></li>
-<li><p>не менее 30 ассоциаций между классами;</p></li>
-<li><p>не менее 12 собственных классов исключений.</p></li>
-</ul>
-<p>Дополнительно: README с описанием всех классов, модульные тесты с
-покрытием &gt; 90 %, консольный интерфейс, документация Sphinx и CI/CD.</p>
+<p>Спроектировать крупный ООП-проект: не менее 50 классов, 150 полей,
+100 поведений, 30 ассоциаций, 12 собственных исключений.</p>
 </section>
 <section id="id2">
-<h2>2. Достигнутые показатели<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Показатель</p></th>
-<th class="head"><p>Требование</p></th>
-<th class="head"><p>Достигнуто</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Классы</p></td>
-<td><p>≥ 50</p></td>
-<td><p>108</p></td>
-</tr>
-<tr class="row-odd"><td><p>Поля</p></td>
-<td><p>≥ 150</p></td>
-<td><p>~250</p></td>
-</tr>
-<tr class="row-even"><td><p>Поведения</p></td>
-<td><p>≥ 100</p></td>
-<td><p>~180</p></td>
-</tr>
-<tr class="row-odd"><td><p>Ассоциации</p></td>
-<td><p>≥ 30</p></td>
-<td><p>~60</p></td>
-</tr>
-<tr class="row-even"><td><p>Исключения</p></td>
-<td><p>≥ 12</p></td>
-<td><p>18</p></td>
-</tr>
-<tr class="row-odd"><td><p>Покрытие</p></td>
-<td><p>&gt; 90 %</p></td>
-<td><p>96 %</p></td>
-</tr>
-</tbody>
-</table>
+<h2>2. Достигнуто<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>108 классов</p></li>
+<li><p>~250 полей</p></li>
+<li><p>~180 поведений</p></li>
+<li><p>~60 ассоциаций</p></li>
+<li><p>18 исключений</p></li>
+<li><p>450 тестов, покрытие 96 %</p></li>
+</ul>
 </section>
 <section id="id3">
-<h2>3. Выбранный язык и инструменты<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Назначение</p></th>
-<th class="head"><p>Выбор</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Язык программирования</p></td>
-<td><p>Python 3.13</p></td>
-</tr>
-<tr class="row-odd"><td><p>Тестирование</p></td>
-<td><p>pytest + pytest-cov</p></td>
-</tr>
-<tr class="row-even"><td><p>Документация</p></td>
-<td><p>Sphinx (autodoc, napoleon, viewcode)</p></td>
-</tr>
-<tr class="row-odd"><td><p>Статический анализ</p></td>
-<td><p>flake8</p></td>
-</tr>
-<tr class="row-even"><td><p>CI/CD</p></td>
-<td><p>GitHub Actions</p></td>
-</tr>
-</tbody>
-</table>
+<h2>3. Инструменты<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>Python 3.13, pytest, Sphinx, flake8, GitHub Actions.</p>
 </section>
 <section id="id4">
-<h2>4. Структура проекта<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>lab2/
-├── README.md
-├── src/
-│   ├── exceptions.py
-│   ├── money.py
-│   ├── units.py
-│   ├── allergens.py
-│   ├── ingredients.py
-│   ├── nutrition.py
-│   ├── technique.py
-│   ├── equipment.py
-│   ├── recipes.py
-│   ├── dishes.py
-│   ├── people.py
-│   ├── staff.py
-│   ├── supply.py
-│   ├── storage.py
-│   ├── business.py
-│   ├── education.py
-│   ├── analytics.py
-│   ├── kitchen.py
-│   └── cli.py
-├── tests/
-└── docs/
-</pre></div>
-</div>
-<p>Проект разделён на три уровня:</p>
-<ul class="simple">
-<li><p><strong>Предметный уровень</strong> — все модули <code class="docutils literal notranslate"><span class="pre">src</span></code>, кроме <code class="docutils literal notranslate"><span class="pre">cli.py</span></code>.</p></li>
-<li><p><strong>Уровень представления</strong> — <code class="docutils literal notranslate"><span class="pre">cli.py</span></code>.</p></li>
-<li><p><strong>Уровень тестирования</strong> — <code class="docutils literal notranslate"><span class="pre">tests/</span></code>.</p></li>
-</ul>
-</section>
-<section id="id5">
-<h2>5. Архитектура предметной области<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
-<section id="id6">
-<h3>5.1. Базовые типы-значения<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Money</strong> — сумма в одной валюте, хранится в минорных единицах.</p></li>
-<li><p><strong>Unit</strong>, <strong>Quantity</strong> — единицы измерения и величина.</p></li>
-<li><p><strong>Allergen</strong>, <strong>AllergenSet</strong> — аллергены и их множества.</p></li>
-<li><p><strong>Nutrition</strong>, <strong>NutritionTracker</strong> — пищевая ценность и трекер.</p></li>
-</ul>
+<h2>4. Базовые типы<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<p>Money, Unit, Quantity, Allergen, AllergenSet, Nutrition, NutritionTracker.</p>
 <p id="module-lab2.src.money">Money value object for the culinary domain.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.money.Money">
@@ -1478,14 +1360,10 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id7">
-<h3>5.2. Ингредиенты<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
-<p><strong>Ingredient</strong> — базовый класс ингредиента с названием, единицей измерения,
-ценой и аллергенами. Подклассы: <strong>Vegetable</strong> (сезонность, органика),
-<strong>Fruit</strong> (спелость, сладость), <strong>Meat</strong> (безопасная температура),
-<strong>Fish</strong> (свежесть, кости), <strong>Dairy</strong> (жирность), <strong>Spice</strong> (шкала
-Сковилла), <strong>Grain</strong> (глютен, время приготовления). <strong>IngredientLot</strong> —
-партия с датой истечения и методом <code class="docutils literal notranslate"><span class="pre">consume()</span></code>.</p>
+<section id="id5">
+<h2>5. Ингредиенты<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<p>Ingredient и подклассы Vegetable, Fruit, Meat, Fish, Dairy, Spice, Grain,
+плюс IngredientLot.</p>
 <p id="module-lab2.src.ingredients">Ingredient hierarchy for the culinary domain.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.ingredients.Dairy">
@@ -1719,11 +1597,10 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id8">
-<h3>5.3. Техники приготовления<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
-<p>Абстрактный класс <strong>Technique</strong> и семь конкретных техник: <code class="docutils literal notranslate"><span class="pre">Boil</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Fry</span></code>, <code class="docutils literal notranslate"><span class="pre">Bake</span></code>, <code class="docutils literal notranslate"><span class="pre">Grill</span></code>, <code class="docutils literal notranslate"><span class="pre">Steam</span></code>, <code class="docutils literal notranslate"><span class="pre">SousVide</span></code>, <code class="docutils literal notranslate"><span class="pre">Mix</span></code>. Каждая
-реализует <code class="docutils literal notranslate"><span class="pre">apply()</span></code>; превышение времени вызывает <code class="docutils literal notranslate"><span class="pre">OvercookedError</span></code>.</p>
+<section id="id6">
+<h2>6. Техники<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<p>Абстрактный Technique и реализации Boil, Fry, Bake, Grill, Steam, SousVide,
+Mix.</p>
 <p id="module-lab2.src.technique">Cooking techniques for the culinary domain.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.technique.Bake">
@@ -1890,11 +1767,10 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id9">
-<h3>5.4. Оборудование<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
-<p>Абстрактный класс <strong>Equipment</strong> с состоянием «свободно / занято / сломано»
-и девять конкретных реализаций: <code class="docutils literal notranslate"><span class="pre">Oven</span></code>, <code class="docutils literal notranslate"><span class="pre">Stove</span></code>, <code class="docutils literal notranslate"><span class="pre">Blender</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Machine</span></code>, <code class="docutils literal notranslate"><span class="pre">Mixer</span></code>, <code class="docutils literal notranslate"><span class="pre">Fridge</span></code>, <code class="docutils literal notranslate"><span class="pre">Freezer</span></code>, <code class="docutils literal notranslate"><span class="pre">Workstation</span></code>.</p>
+<section id="id7">
+<h2>7. Оборудование<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<p>Абстрактный Equipment и реализации Oven, Stove, Blender, Machine, Mixer,
+Fridge, Freezer, Workstation.</p>
 <p id="module-lab2.src.equipment">Kitchen equipment for the culinary domain.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.equipment.Blender">
@@ -2098,15 +1974,9 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id10">
-<h3>5.5. Рецепты<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>RecipeStep</strong> — шаг рецепта.</p></li>
-<li><p><strong>RecipeIngredient</strong> — ингредиент с количеством.</p></li>
-<li><p><strong>Recipe</strong> — рецепт: ингредиенты, шаги, порции, пищевая ценность.</p></li>
-<li><p><strong>RecipeBook</strong> — коллекция с поиском по стоимости, времени и аллергенам.</p></li>
-<li><p><strong>RecipeAnalyzer</strong> — аналитика по одному рецепту.</p></li>
-</ul>
+<section id="id8">
+<h2>8. Рецепты<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<p>RecipeStep, RecipeIngredient, Recipe, RecipeBook, RecipeAnalyzer.</p>
 <p id="module-lab2.src.recipes">Recipes and recipe book for the culinary domain.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.recipes.Recipe">
@@ -2396,15 +2266,9 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id11">
-<h3>5.6. Блюда и меню<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Portion</strong> — порция рецепта.</p></li>
-<li><p><strong>Dish</strong> — блюдо с гарниром и оформлением.</p></li>
-<li><p><strong>Course</strong> — курс приёма пищи.</p></li>
-<li><p><strong>Menu</strong> — набор курсов.</p></li>
-<li><p><strong>MenuPlanner</strong> — планировщик меню по эвристикам.</p></li>
-</ul>
+<section id="id9">
+<h2>9. Блюда и меню<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<p>Portion, Dish, Course, Menu, MenuPlanner.</p>
 <p id="module-lab2.src.dishes">Dishes, portions, courses and menus for the culinary domain.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.dishes.Course">
@@ -2645,11 +2509,10 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id12">
-<h3>5.7. Люди<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
-<p>Иерархия: <strong>Person</strong> → <strong>Employee</strong> → <strong>Cook</strong> → <strong>Chef</strong> → <strong>SousChef</strong>,
-плюс <strong>Waiter</strong>, <strong>Bartender</strong>, <strong>Instructor</strong>, <strong>Customer</strong>, <strong>Critic</strong>,
-<strong>Student</strong>.</p>
+<section id="id10">
+<h2>10. Люди<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<p>Person, Employee, Cook, Chef, SousChef, Waiter, Bartender, Instructor,
+Customer, Critic, Student.</p>
 <p id="module-lab2.src.people">People in the culinary domain: chefs, cooks, waiters, customers, critics.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.people.Bartender">
@@ -2993,15 +2856,9 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id13">
-<h3>5.8. Персонал<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Shift</strong> — смена с проверкой пересечения.</p></li>
-<li><p><strong>Schedule</strong> — недельное расписание.</p></li>
-<li><p><strong>Salary</strong> — расчёт зарплаты.</p></li>
-<li><p><strong>Staff</strong> — список сотрудников.</p></li>
-<li><p><strong>Team</strong> — команда с лидером.</p></li>
-</ul>
+<section id="id11">
+<h2>11. Персонал<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
+<p>Shift, Schedule, Salary, Staff, Team.</p>
 <p id="module-lab2.src.staff">Staff management: shifts, schedules, teams.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.staff.Salary">
@@ -3230,15 +3087,9 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id14">
-<h3>5.9. Поставки<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Supplier</strong> — поставщик с каталогом.</p></li>
-<li><p><strong>PurchaseOrder</strong> — заказ на закупку со статусами.</p></li>
-<li><p><strong>Delivery</strong> — доставка.</p></li>
-<li><p><strong>Invoice</strong> — счёт-фактура.</p></li>
-<li><p><strong>Inventory</strong> — склад с уровнями пополнения.</p></li>
-</ul>
+<section id="id12">
+<h2>12. Поставки<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<p>Supplier, PurchaseOrderLine, PurchaseOrder, Delivery, Invoice, Inventory.</p>
 <p id="module-lab2.src.supply">Supply chain: suppliers, purchase orders, deliveries, invoices, inventory.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.supply.Delivery">
@@ -3582,11 +3433,9 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id15">
-<h3>5.10. Хранение<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Rack</strong>, <strong>StorageZone</strong>, <strong>StorageUnit</strong>, <strong>Warehouse</strong>.</p></li>
-</ul>
+<section id="id13">
+<h2>13. Хранение<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<p>Rack, StorageZone, StorageUnit, Warehouse.</p>
 <p id="module-lab2.src.storage">Storage: warehouses, zones, storage units, racks.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.storage.Rack">
@@ -3799,13 +3648,9 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id16">
-<h3>5.11. Бизнес<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Table</strong>, <strong>Reservation</strong>, <strong>Review</strong>, <strong>Promotion</strong>.</p></li>
-<li><p><strong>Branch</strong> — филиал ресторана.</p></li>
-<li><p><strong>Restaurant</strong> — сеть ресторанов.</p></li>
-</ul>
+<section id="id14">
+<h2>14. Бизнес<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
+<p>Table, Reservation, Review, Promotion, Branch, Restaurant.</p>
 <p id="module-lab2.src.business">Business entities: restaurants, branches, tables, reservations, reviews.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.business.Branch">
@@ -4102,12 +3947,9 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id17">
-<h3>5.12. Образование<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Lesson</strong>, <strong>Course</strong>, <strong>CulinarySchool</strong>, <strong>Enrollment</strong>, <strong>Workshop</strong>,
-<strong>Certificate</strong>.</p></li>
-</ul>
+<section id="id15">
+<h2>15. Образование<a class="headerlink" href="#id15" title="Link to this heading"></a></h2>
+<p>Lesson, Course, CulinarySchool, Enrollment, Workshop, Certificate.</p>
 <p id="module-lab2.src.education">Culinary education: schools, courses, lessons, students, certificates.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.education.Certificate">
@@ -4380,14 +4222,11 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id18">
-<h3>5.13. Аналитика<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>CostCalculator</strong>, <strong>ProfitAnalyzer</strong>, <strong>TaxCalculator</strong> — расчёты.</p></li>
-<li><p><strong>Metric</strong>, <strong>MetricsReport</strong>, <strong>PerformanceMetric</strong>,
-<strong>FuelConsumption</strong>, <strong>TrafficInfo</strong>, <strong>ExpenseTracker</strong>,
-<strong>ReportGenerator</strong> — метрики и отчёты.</p></li>
-</ul>
+<section id="id16">
+<h2>16. Аналитика<a class="headerlink" href="#id16" title="Link to this heading"></a></h2>
+<p>CostCalculator, ProfitAnalyzer, TaxCalculator, Metric, MetricsReport,
+PerformanceMetric, FuelConsumption, TrafficInfo, ExpenseTracker,
+ReportGenerator.</p>
 <p id="module-lab2.src.analytics">Analytics: cost, profit, tax and KPI calculations for the culinary domain.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.analytics.CostCalculator">
@@ -4753,14 +4592,9 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id19">
-<h3>5.14. Кухня<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>KitchenTask</strong> — задача со статусами.</p></li>
-<li><p><strong>Workstation</strong> — рабочее место.</p></li>
-<li><p><strong>Kitchen</strong> — кухня.</p></li>
-<li><p><strong>ShiftHandover</strong> — передача смены.</p></li>
-</ul>
+<section id="id17">
+<h2>17. Кухня<a class="headerlink" href="#id17" title="Link to this heading"></a></h2>
+<p>KitchenTask, Workstation, Kitchen, ShiftHandover.</p>
 <p id="module-lab2.src.kitchen">Kitchen operations: workstations, tasks, task queues.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab2.src.kitchen.Kitchen">
@@ -5017,32 +4851,9 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-</section>
-<section id="id20">
-<h2>6. Исключения<a class="headerlink" href="#id20" title="Link to this heading"></a></h2>
-<p>Все 18 собственных исключений наследуются от базового
-<strong>CulinaryException</strong>:</p>
-<ol class="arabic simple">
-<li><p>CulinaryException</p></li>
-<li><p>RecipeNotFoundError</p></li>
-<li><p>IngredientNotFoundError</p></li>
-<li><p>InsufficientIngredientError</p></li>
-<li><p>InvalidQuantityError</p></li>
-<li><p>InvalidUnitError</p></li>
-<li><p>AllergenConflictError</p></li>
-<li><p>OvercookedError</p></li>
-<li><p>EquipmentUnavailableError</p></li>
-<li><p>EquipmentBrokenError</p></li>
-<li><p>ReservationConflictError</p></li>
-<li><p>TableNotFoundError</p></li>
-<li><p>OrderAlreadyClosedError</p></li>
-<li><p>PaymentFailedError</p></li>
-<li><p>InsufficientFundsError</p></li>
-<li><p>InvalidMenuItemError</p></li>
-<li><p>SupplierUnavailableError</p></li>
-<li><p>InvalidScheduleError</p></li>
-<li><p>CertificateExpiredError</p></li>
-</ol>
+<section id="id18">
+<h2>18. Исключения<a class="headerlink" href="#id18" title="Link to this heading"></a></h2>
+<p>18 собственных исключений, все наследуют CulinaryException.</p>
 <p id="module-lab2.src.exceptions">Custom exceptions for the culinary domain.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="lab2.src.exceptions.AllergenConflictError">
@@ -5178,126 +4989,20 @@ floating-point drift.</p>
 </dd></dl>
 
 </section>
-<section id="id21">
-<h2>7. Консольный интерфейс<a class="headerlink" href="#id21" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">lab2/src/cli.py</span></code> — меню на основе <code class="docutils literal notranslate"><span class="pre">while</span> <span class="pre">True</span></code> с пятью разделами:</p>
-<ol class="arabic simple">
-<li><p><strong>Recipes</strong> — добавление рецепта, ингредиентов и шагов, просмотр,
-удаление, поиск по стоимости.</p></li>
-<li><p><strong>Menus</strong> — построение меню из рецептов.</p></li>
-<li><p><strong>People</strong> — наём персонала и регистрация клиентов.</p></li>
-<li><p><strong>Restaurant</strong> — добавление ресторана, филиала, столика, бронирование,
-отзывы.</p></li>
-<li><p><strong>Education</strong> — добавление школы, курса, зачисление студента, выдача
-сертификата.</p></li>
-</ol>
-<p>CLI не обращается к приватным полям классов, не дублирует логику
-предметной области и корректно ловит исключения.</p>
-<p><strong>Запуск:</strong></p>
+<section id="id19">
+<h2>19. Консольный интерфейс<a class="headerlink" href="#id19" title="Link to this heading"></a></h2>
+<p>Пять меню: Recipes, Menus, People, Restaurant, Education.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>lab2.src.cli
 </pre></div>
 </div>
 </section>
-<section id="id22">
-<h2>8. Тестирование<a class="headerlink" href="#id22" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><strong>450 тестов</strong> pytest в 15 файлах.</p></li>
-<li><p>Покрытие предметного слоя — <strong>96 %</strong> (требование &gt; 90 %).</p></li>
-<li><p>CLI исключён из измерения через <code class="docutils literal notranslate"><span class="pre">.coveragerc</span></code>.</p></li>
-</ul>
-<p>Команда:</p>
+<section id="ci-cd">
+<h2>20. Тестирование и CI/CD<a class="headerlink" href="#ci-cd" title="Link to this heading"></a></h2>
+<p>450 тестов, покрытие 96 %. GitHub Actions запускает flake8, тесты обеих
+лабораторных и обе сборки Sphinx.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>lab2/tests<span class="w"> </span>--cov<span class="o">=</span>lab2/src<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
 </pre></div>
 </div>
-<p><strong>Основные тестовые сценарии</strong></p>
-<ul class="simple">
-<li><p>создание всех классов и подклассов;</p></li>
-<li><p>проверка инвариантов (занятое оборудование, конфликт бронирования,
-истёкший сертификат);</p></li>
-<li><p>граничные случаи (пустые рецепты, нулевые количества, деление на ноль);</p></li>
-<li><p>работа с аллергенами и множествами;</p></li>
-<li><p>сериализация и обратное восстановление;</p></li>
-<li><p>взаимодействие подсистем (заказ → доставка → счёт → оплата).</p></li>
-</ul>
-</section>
-<section id="id23">
-<h2>9. Документация<a class="headerlink" href="#id23" title="Link to this heading"></a></h2>
-<p>Документация сгенерирована Sphinx с расширениями <code class="docutils literal notranslate"><span class="pre">autodoc</span></code>, <code class="docutils literal notranslate"><span class="pre">napoleon</span></code>,
-<code class="docutils literal notranslate"><span class="pre">viewcode</span></code>. <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> добавляет корень репозитория в <code class="docutils literal notranslate"><span class="pre">sys.path</span></code> через
-<code class="docutils literal notranslate"><span class="pre">os.path.dirname(__file__)</span></code>, чтобы не зависеть от текущей рабочей
-директории.</p>
-<p>Сборка:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>lab2/docs
-sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>.<span class="w"> </span>_build/html
-</pre></div>
-</div>
-<p>Результат — <code class="docutils literal notranslate"><span class="pre">lab2/docs/_build/html/index.html</span></code>.</p>
-</section>
-<section id="id24">
-<h2>10. Непрерывная интеграция и доставка<a class="headerlink" href="#id24" title="Link to this heading"></a></h2>
-<p>Файл <code class="docutils literal notranslate"><span class="pre">.github/workflows/ci.yml</span></code> запускается при push в <code class="docutils literal notranslate"><span class="pre">main</span></code>, при push
-в ветки <code class="docutils literal notranslate"><span class="pre">feature/**</span></code>, при Pull Request в <code class="docutils literal notranslate"><span class="pre">main</span></code> и при создании тега
-<code class="docutils literal notranslate"><span class="pre">v*</span></code>.</p>
-<p><strong>Этапы pipeline</strong></p>
-<ol class="arabic simple">
-<li><p>Checkout репозитория.</p></li>
-<li><p>Установка Python 3.12.</p></li>
-<li><p>Установка зависимостей из <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>.</p></li>
-<li><p>Проверка стиля: <code class="docutils literal notranslate"><span class="pre">flake8</span> <span class="pre">lab1/src</span> <span class="pre">lab2/src</span></code>.</p></li>
-<li><p>Тесты Lab 1 с покрытием и порогом 90 %.</p></li>
-<li><p>Тесты Lab 2 с покрытием и порогом 90 %.</p></li>
-<li><p>Сборка документации Sphinx для обоих лаб.</p></li>
-<li><p>Упаковка <code class="docutils literal notranslate"><span class="pre">lab1/src</span></code> и <code class="docutils literal notranslate"><span class="pre">lab2/src</span></code> в <code class="docutils literal notranslate"><span class="pre">lab-src.zip</span></code>.</p></li>
-<li><p>Публикация артефакта в GitHub Releases при пуше тега.</p></li>
-</ol>
-</section>
-<section id="git">
-<h2>11. Рабочий процесс Git<a class="headerlink" href="#git" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Основная ветка — <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p></li>
-<li><p>Работа велась в ветке <code class="docutils literal notranslate"><span class="pre">feature/lab2</span></code>, созданной от <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p></li>
-<li><p>Изменения фиксировались логически раздельными коммитами.</p></li>
-<li><p>Изменения влиты в <code class="docutils literal notranslate"><span class="pre">main</span></code> через Pull Request №2.</p></li>
-<li><p>Создан тег <code class="docutils literal notranslate"><span class="pre">v2.0.0</span></code>; артефакт <code class="docutils literal notranslate"><span class="pre">lab-src.zip</span></code> опубликован на странице
-Releases.</p></li>
-</ul>
-</section>
-<section id="id25">
-<h2>12. Результаты<a class="headerlink" href="#id25" title="Link to this heading"></a></h2>
-<p>Все требования лабораторной работы выполнены и перевыполнены:</p>
-<ul class="simple">
-<li><p>108 классов (требование ≥ 50);</p></li>
-<li><p>~250 полей (требование ≥ 150);</p></li>
-<li><p>~180 поведений (требование ≥ 100);</p></li>
-<li><p>~60 ассоциаций (требование ≥ 30);</p></li>
-<li><p>18 собственных исключений (требование ≥ 12);</p></li>
-<li><p>покрытие тестами — 96 % (требование &gt; 90 %);</p></li>
-<li><p>CI/CD настроен и работает;</p></li>
-<li><p>артефакт сборки опубликован в GitHub Releases.</p></li>
-</ul>
-</section>
-<section id="id26">
-<h2>13. Воспроизведение проекта<a class="headerlink" href="#id26" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/nwaezeezinne86-prog/ppoislabs.git
-<span class="nb">cd</span><span class="w"> </span>ppoislabs
-python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
-<span class="nb">source</span><span class="w"> </span>.venv/Scripts/activate
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-<span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>lab2/tests<span class="w"> </span>--cov<span class="o">=</span>lab2/src<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
-<span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>lab2.src.cli
-</pre></div>
-</div>
-</section>
-<section id="id27">
-<h2>14. Заключение<a class="headerlink" href="#id27" title="Link to this heading"></a></h2>
-<p>В ходе работы спроектирован и реализован крупный объектно-ориентированный
-проект на тему «Кулинария», полностью удовлетворяющий количественным
-требованиям задания. Проект демонстрирует практическое применение
-принципов ООП: абстракции, наследования, полиморфизма, инкапсуляции и
-композиции.</p>
-<p>Отделение предметной логики от CLI, документирование Sphinx и настройка
-CI/CD с публикацией артефактов делают проект воспроизводимым, тестируемым
-и готовым к сопровождению.</p>
 </section>
 </section>
 

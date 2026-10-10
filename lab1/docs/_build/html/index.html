@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Отчёт по лабораторной работе №1 &mdash; Lab1 - BigInt and Post Machine 1.0.0 documentation</title>
+  <title>Лабораторная работа №1 — BigInt и машина Поста &mdash; Lab1 - BigInt and Post Machine 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
@@ -42,16 +42,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Отчёт по лабораторной работе №1</a><ul>
+<li><a class="reference internal" href="#">Лабораторная работа №1 — BigInt и машина Поста</a><ul>
 <li><a class="reference internal" href="#id1">1. Цель работы</a></li>
-<li><a class="reference internal" href="#id2">2. Выбранный язык и инструменты</a></li>
-<li><a class="reference internal" href="#id3">3. Структура репозитория</a></li>
-<li><a class="reference internal" href="#bigint">4. Вариант 1.6.3 — BigInt</a><ul>
-<li><a class="reference internal" href="#id4">4.1. Представление данных</a></li>
-<li><a class="reference internal" href="#id5">4.2. Интерфейс</a></li>
-<li><a class="reference internal" href="#id6">4.3. Алгоритмы</a></li>
-<li><a class="reference internal" href="#id7">4.4. Обработка ошибок</a></li>
-<li><a class="reference internal" href="#id8">4.5. Автоматическая документация класса</a><ul>
+<li><a class="reference internal" href="#id2">2. Инструменты</a></li>
+<li><a class="reference internal" href="#bigint">3. Класс BigInt</a><ul>
 <li><a class="reference internal" href="#lab1.src.big_int.BigInt"><code class="docutils literal notranslate"><span class="pre">BigInt</span></code></a><ul>
 <li><a class="reference internal" href="#lab1.src.big_int.BigInt.copy"><code class="docutils literal notranslate"><span class="pre">BigInt.copy()</span></code></a></li>
 <li><a class="reference internal" href="#lab1.src.big_int.BigInt.decrement"><code class="docutils literal notranslate"><span class="pre">BigInt.decrement()</span></code></a></li>
@@ -66,13 +60,7 @@
 </li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id9">5. Вариант 1.8.1 — машина Поста и лента</a><ul>
-<li><a class="reference internal" href="#tape">5.1. Лента (<code class="docutils literal notranslate"><span class="pre">Tape</span></code>)</a></li>
-<li><a class="reference internal" href="#postmachine">5.2. Класс <code class="docutils literal notranslate"><span class="pre">PostMachine</span></code></a></li>
-<li><a class="reference internal" href="#id10">5.3. Обработка ошибок</a></li>
-<li><a class="reference internal" href="#id11">5.4. Автоматическая документация класса</a><ul>
+<li><a class="reference internal" href="#postmachine-tape">4. Классы PostMachine и Tape</a><ul>
 <li><a class="reference internal" href="#lab1.src.post_machine.PostMachine"><code class="docutils literal notranslate"><span class="pre">PostMachine</span></code></a><ul>
 <li><a class="reference internal" href="#lab1.src.post_machine.PostMachine.COMMANDS"><code class="docutils literal notranslate"><span class="pre">PostMachine.COMMANDS</span></code></a></li>
 <li><a class="reference internal" href="#lab1.src.post_machine.PostMachine.DEFAULT_MAX_STEPS"><code class="docutils literal notranslate"><span class="pre">PostMachine.DEFAULT_MAX_STEPS</span></code></a></li>
@@ -105,17 +93,9 @@
 </li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a class="reference internal" href="#id12">6. Консольный интерфейс</a></li>
-<li><a class="reference internal" href="#id13">7. Тестирование</a></li>
-<li><a class="reference internal" href="#id14">8. Документация</a></li>
-<li><a class="reference internal" href="#ci-cd">9. Непрерывная интеграция и доставка (CI/CD)</a></li>
-<li><a class="reference internal" href="#git">10. Рабочий процесс Git</a></li>
-<li><a class="reference internal" href="#c-python">11. Сопоставление требований C++ с Python</a></li>
-<li><a class="reference internal" href="#id15">12. Результаты</a></li>
-<li><a class="reference internal" href="#id16">13. Воспроизведение проекта</a></li>
-<li><a class="reference internal" href="#id17">14. Заключение</a></li>
+<li><a class="reference internal" href="#id3">5. Консольный интерфейс</a></li>
+<li><a class="reference internal" href="#id4">6. Тестирование</a></li>
+<li><a class="reference internal" href="#ci-cd">7. CI/CD</a></li>
 </ul>
 </li>
 </ul>
@@ -134,7 +114,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Отчёт по лабораторной работе №1</li>
+      <li class="breadcrumb-item active">Лабораторная работа №1 — BigInt и машина Поста</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -144,212 +124,47 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="o1">
-<h1>Отчёт по лабораторной работе №1<a class="headerlink" href="#o1" title="Link to this heading"></a></h1>
-<p><strong>Министерство образования Республики Беларусь</strong>
-<strong>Учреждение образования «Белорусский государственный университет информатики и радиоэлектроники»</strong>
-Факультет информационных технологий и управления
-Кафедра интеллектуальных информационных технологий</p>
+  <section id="o1-bigint">
+<h1>Лабораторная работа №1 — BigInt и машина Поста<a class="headerlink" href="#o1-bigint" title="Link to this heading"></a></h1>
 <p><strong>Дисциплина:</strong> ППОИС
-<strong>Лабораторная работа №1:</strong> «Основы ООП: разработка класса»</p>
-<p><strong>Выполнил:</strong> [ФИО], гр. [номер группы]
-<strong>Варианты:</strong> 1.6.3 и 1.8.1
-<strong>Проверил:</strong> [ФИО преподавателя]
-<strong>Дата:</strong> [YYYY-MM-DD]</p>
+<strong>Выполнил:</strong> [ФИО], гр. [группа]
+<strong>Проверил:</strong> [ФИО преподавателя]</p>
 <section id="id1">
 <h2>1. Цель работы<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
-<p>Реализовать один из предложенных вариантов на разрешённом языке
-программирования, обеспечив:</p>
+<p>Реализовать класс-значение и класс-состояние на ООП-языке. Обеспечить
+инкапсуляцию, разделение интерфейса и реализации, модульные тесты,
+документацию Sphinx и CI/CD.</p>
+<p>Реализованы варианты:</p>
 <ul class="simple">
-<li><p>полностью инкапсулированный класс с разделёнными интерфейсом и
-реализацией;</p></li>
-<li><p>консольное приложение, демонстрирующее работу класса через меню;</p></li>
-<li><p>модульные тесты с покрытием более 90 %;</p></li>
-<li><p>документацию, сгенерированную стандартным инструментом для выбранного
-языка;</p></li>
-<li><p>CI/CD-конвейер, который запускает тесты, проверяет стиль кода, собирает
-документацию и публикует артефакт сборки в GitHub Releases.</p></li>
+<li><p><strong>1.6.3</strong> — знаковое длинное целое неограниченной длины.</p></li>
+<li><p><strong>1.8.1</strong> — машина Поста.</p></li>
 </ul>
-<p>В рамках одной лабораторной работы реализованы два варианта:</p>
-<ol class="arabic simple">
-<li><p><strong>1.6.3</strong> — знаковое длинное целое неограниченной длины с полным набором
-требуемых операций.</p></li>
-<li><p><strong>1.8.1</strong> — машина Поста (обязательный вариант, указанный в задании).</p></li>
-</ol>
 </section>
 <section id="id2">
-<h2>2. Выбранный язык и инструменты<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Назначение</p></th>
-<th class="head"><p>Выбор</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Язык программирования</p></td>
-<td><p>Python 3.13</p></td>
-</tr>
-<tr class="row-odd"><td><p>Модульное тестирование</p></td>
-<td><p>pytest + pytest-cov</p></td>
-</tr>
-<tr class="row-even"><td><p>Документация</p></td>
-<td><p>Sphinx (autodoc, napoleon, viewcode)</p></td>
-</tr>
-<tr class="row-odd"><td><p>Статический анализ</p></td>
-<td><p>flake8</p></td>
-</tr>
-<tr class="row-even"><td><p>CI/CD</p></td>
-<td><p>GitHub Actions</p></td>
-</tr>
-<tr class="row-odd"><td><p>Система контроля версий</p></td>
-<td><p>Git + GitHub (отдельная ветка, Pull Request)</p></td>
-</tr>
-</tbody>
-</table>
-<p>Python выбран потому, что он позволяет естественным образом реализовать
-требуемые концепции C++ с помощью магических методов.</p>
-</section>
-<section id="id3">
-<h2>3. Структура репозитория<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ppoislabs/
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── .coveragerc
-├── .gitattributes
-├── .gitignore
-├── README.md
-├── requirements.txt
-└── lab1/
-    ├── src/
-    │   ├── __init__.py
-    │   ├── big_int.py
-    │   ├── post_machine.py
-    │   └── cli.py
-    ├── tests/
-    │   ├── __init__.py
-    │   ├── test_big_int.py
-    │   └── test_post_machine.py
-    └── docs/
-        ├── conf.py
-        └── index.rst
-</pre></div>
-</div>
-<p>Каждый из трёх уровней находится в отдельном модуле:</p>
+<h2>2. Инструменты<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>Предметный уровень</strong> (Domain layer) — <code class="docutils literal notranslate"><span class="pre">big_int.py</span></code>,
-<code class="docutils literal notranslate"><span class="pre">post_machine.py</span></code>.</p></li>
-<li><p><strong>Уровень представления</strong> (Presentation layer) — <code class="docutils literal notranslate"><span class="pre">cli.py</span></code>.</p></li>
-<li><p><strong>Уровень тестирования</strong> (Test layer) — <code class="docutils literal notranslate"><span class="pre">tests/</span></code>.</p></li>
+<li><p>Python 3.13</p></li>
+<li><p>pytest + pytest-cov</p></li>
+<li><p>Sphinx (autodoc, napoleon, viewcode)</p></li>
+<li><p>flake8</p></li>
+<li><p>GitHub Actions</p></li>
 </ul>
-<p>Предметные модули не импортируют <code class="docutils literal notranslate"><span class="pre">cli.py</span></code> и не содержат элементов,
-связанных с пользовательским интерфейсом. Это обеспечивает независимость
-класса и пользовательского интерфейса друг от друга.</p>
 </section>
 <section id="bigint">
-<h2>4. Вариант 1.6.3 — BigInt<a class="headerlink" href="#bigint" title="Link to this heading"></a></h2>
-<section id="id4">
-<h3>4.1. Представление данных<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
-<p>Число хранится в виде знака (<code class="docutils literal notranslate"><span class="pre">_sign</span></code>) и списка десятичных цифр
-(<code class="docutils literal notranslate"><span class="pre">_digits</span></code>), где младшая цифра находится первой.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">_sign</span></code> ∈ {−1, 0, 1}.</p></li>
-<li><p>Ноль хранится как <code class="docutils literal notranslate"><span class="pre">sign</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">digits</span> <span class="pre">=</span> <span class="pre">[0]</span></code>.</p></li>
-<li><p>После каждой операции ведущие нули удаляются.</p></li>
-</ul>
-<p>Такое представление выбрано для того, чтобы ни одна арифметическая
-операция не использовала встроенный тип <code class="docutils literal notranslate"><span class="pre">int</span></code>. Это позволяет реализовать
-настоящую длинную арифметику, а не просто создать оболочку над встроенным
+<h2>3. Класс BigInt<a class="headerlink" href="#bigint" title="Link to this heading"></a></h2>
+<p>Число хранится как знак (<code class="docutils literal notranslate"><span class="pre">_sign</span></code> ∈ {-1, 0, 1}) и список десятичных цифр
+(<code class="docutils literal notranslate"><span class="pre">_digits</span></code>), младшая цифра первой. Арифметика не использует встроенный
 <code class="docutils literal notranslate"><span class="pre">int</span></code>.</p>
-</section>
-<section id="id5">
-<h3>4.2. Интерфейс<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
-<p><strong>Конструкторы</strong></p>
-<p><code class="docutils literal notranslate"><span class="pre">BigInt(value:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">BigInt</span> <span class="pre">=</span> <span class="pre">0)</span></code> — перегруженный конструктор.</p>
-<p><strong>Свойства</strong></p>
+<p>Поддерживается:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">sign</span></code> — возвращает −1, 0 или 1.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">is_zero</span></code> — <code class="docutils literal notranslate"><span class="pre">True</span></code>, если число равно нулю.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">*</span> <span class="pre">/</span> <span class="pre">%</span></code> и составные <code class="docutils literal notranslate"><span class="pre">+=</span> <span class="pre">-=</span> <span class="pre">*=</span> <span class="pre">/=</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">increment</span></code>, <code class="docutils literal notranslate"><span class="pre">decrement</span></code>, <code class="docutils literal notranslate"><span class="pre">pre_increment</span></code>, <code class="docutils literal notranslate"><span class="pre">pre_decrement</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">==</span> <span class="pre">&lt;</span> <span class="pre">&lt;=</span> <span class="pre">&gt;</span> <span class="pre">&gt;=</span></code> и <code class="docutils literal notranslate"><span class="pre">__hash__</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int()</span></code>, <code class="docutils literal notranslate"><span class="pre">float()</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from_string</span></code>, <code class="docutils literal notranslate"><span class="pre">to_string</span></code>, <code class="docutils literal notranslate"><span class="pre">copy</span></code>.</p></li>
 </ul>
-<p><strong>Арифметические операции</strong></p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Операция</p></th>
-<th class="head"><p>Метод</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__add__</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">+=</span> <span class="pre">b</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__iadd__</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-</span> <span class="pre">b</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="docutils literal notranslate"><span class="pre">__neg__</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-=</span> <span class="pre">b</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__isub__</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">*</span> <span class="pre">b</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__mul__</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">*=</span> <span class="pre">b</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__imul__</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">/</span> <span class="pre">b</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__floordiv__</span></code>, <code class="docutils literal notranslate"><span class="pre">__truediv__</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">/=</span> <span class="pre">b</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__ifloordiv__</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">%</span> <span class="pre">b</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__mod__</span></code></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Инкремент и декремент</strong></p>
-<p>В Python отсутствуют операторы <code class="docutils literal notranslate"><span class="pre">++</span></code> и <code class="docutils literal notranslate"><span class="pre">--</span></code>, поэтому они реализованы в
-виде методов: <code class="docutils literal notranslate"><span class="pre">increment()</span></code>, <code class="docutils literal notranslate"><span class="pre">decrement()</span></code>, <code class="docutils literal notranslate"><span class="pre">pre_increment()</span></code>,
-<code class="docutils literal notranslate"><span class="pre">pre_decrement()</span></code>.</p>
-<p><strong>Сравнение</strong></p>
-<p><code class="docutils literal notranslate"><span class="pre">__eq__</span></code>, <code class="docutils literal notranslate"><span class="pre">__hash__</span></code>, <code class="docutils literal notranslate"><span class="pre">__lt__</span></code>, <code class="docutils literal notranslate"><span class="pre">__le__</span></code>, <code class="docutils literal notranslate"><span class="pre">__gt__</span></code>, <code class="docutils literal notranslate"><span class="pre">__ge__</span></code>.
-Сравнение также работает с обычными значениями типа <code class="docutils literal notranslate"><span class="pre">int</span></code>.</p>
-<p><strong>Преобразование</strong></p>
-<p><code class="docutils literal notranslate"><span class="pre">__int__</span></code> — преобразование в стандартный <code class="docutils literal notranslate"><span class="pre">int</span></code>;
-<code class="docutils literal notranslate"><span class="pre">__float__</span></code> — преобразование в <code class="docutils literal notranslate"><span class="pre">float</span></code>.</p>
-<p><strong>Работа с текстом</strong></p>
-<p><code class="docutils literal notranslate"><span class="pre">__str__</span></code>, <code class="docutils literal notranslate"><span class="pre">__repr__</span></code>, <code class="docutils literal notranslate"><span class="pre">from_string(text)</span></code>, <code class="docutils literal notranslate"><span class="pre">to_string()</span></code>.</p>
-<p><strong>Копирование</strong></p>
-<p>Конструктор принимает объект <code class="docutils literal notranslate"><span class="pre">BigInt</span></code> — аналог конструктора копирования в
-C++. Метод <code class="docutils literal notranslate"><span class="pre">copy()</span></code> создаёт независимую глубокую копию.</p>
-</section>
-<section id="id6">
-<h3>4.3. Алгоритмы<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Сложение</strong> — поразрядно с переносом; знаки обрабатываются отдельно:
-для одинаковых знаков выполняется сложение абсолютных значений, для
-разных — вычитание меньшего из большего.</p></li>
-<li><p><strong>Вычитание</strong> — реализовано через <code class="docutils literal notranslate"><span class="pre">self</span> <span class="pre">+</span> <span class="pre">(-other)</span></code>.</p></li>
-<li><p><strong>Умножение</strong> — школьный алгоритм, сложность O(n·m).</p></li>
-<li><p><strong>Деление и остаток</strong> — длинное деление; цифра частного находится
-повторным вычитанием.</p></li>
-<li><p><strong>Сравнение</strong> — сначала по знаку, затем по абсолютным значениям: длина,
-затем цифры от старшей к младшей.</p></li>
-</ul>
-</section>
-<section id="id7">
-<h3>4.4. Обработка ошибок<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">TypeError</span></code> — неподдерживаемый тип аргумента.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ValueError</span></code> — некорректная строка: пустая, только знак или содержит
-недопустимые символы.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ZeroDivisionError</span></code> — деление или взятие остатка по модулю на ноль.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">NotImplemented</span></code> — возвращается при неподдерживаемом втором операнде.</p></li>
-</ul>
-</section>
-<section id="id8">
-<h3>4.5. Автоматическая документация класса<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<p>Ошибки: <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>, <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>, <code class="docutils literal notranslate"><span class="pre">ZeroDivisionError</span></code>,
+<code class="docutils literal notranslate"><span class="pre">NotImplemented</span></code>.</p>
 <p id="module-lab1.src.big_int">Signed arbitrary-precision integer module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab1.src.big_int.BigInt">
@@ -418,67 +233,12 @@ C++. Метод <code class="docutils literal notranslate"><span class="pre">cop
 </dd></dl>
 
 </section>
-</section>
-<section id="id9">
-<h2>5. Вариант 1.8.1 — машина Поста и лента<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
-<section id="tape">
-<h3>5.1. Лента (<code class="docutils literal notranslate"><span class="pre">Tape</span></code>)<a class="headerlink" href="#tape" title="Link to this heading"></a></h3>
-<p>Лента бесконечна в обе стороны. Моделируется словарём <code class="docutils literal notranslate"><span class="pre">позиция</span> <span class="pre">→</span> <span class="pre">метка</span></code>;
-хранятся только непустые ячейки. Позиция <code class="docutils literal notranslate"><span class="pre">0</span></code> — начальная, отрицательные
-позиции находятся слева. Метод <code class="docutils literal notranslate"><span class="pre">to_string()</span></code> отображает видимое окно и
-оборачивает ячейку головки в квадратные скобки.</p>
-</section>
-<section id="postmachine">
-<h3>5.2. Класс <code class="docutils literal notranslate"><span class="pre">PostMachine</span></code><a class="headerlink" href="#postmachine" title="Link to this heading"></a></h3>
-<p>Содержит программу, ленту, счётчик команд <code class="docutils literal notranslate"><span class="pre">pc</span></code> и флаг остановки
-<code class="docutils literal notranslate"><span class="pre">halted</span></code>.</p>
-<p><strong>Команды</strong></p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Команда</p></th>
-<th class="head"><p>Назначение</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">L</span></code></p></td>
-<td><p>переместить головку влево</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">R</span></code></p></td>
-<td><p>переместить головку вправо</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">V</span></code></p></td>
-<td><p>установить метку 1</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span></code></p></td>
-<td><p>удалить метку</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">?</span></code></p></td>
-<td><p>условный переход</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">!</span></code></p></td>
-<td><p>остановить машину</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Интерфейс</strong></p>
-<p><code class="docutils literal notranslate"><span class="pre">load_program</span></code>, <code class="docutils literal notranslate"><span class="pre">program</span></code>, <code class="docutils literal notranslate"><span class="pre">tape</span></code>, <code class="docutils literal notranslate"><span class="pre">halted</span></code>, <code class="docutils literal notranslate"><span class="pre">pc</span></code>, <code class="docutils literal notranslate"><span class="pre">step</span></code>,
-<code class="docutils literal notranslate"><span class="pre">run(max_steps)</span></code>, <code class="docutils literal notranslate"><span class="pre">reset</span></code>, <code class="docutils literal notranslate"><span class="pre">set_tape</span></code>, <code class="docutils literal notranslate"><span class="pre">to_string</span></code>, <code class="docutils literal notranslate"><span class="pre">from_string</span></code>,
-<code class="docutils literal notranslate"><span class="pre">copy</span></code>.</p>
-</section>
-<section id="id10">
-<h3>5.3. Обработка ошибок<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
-<p>Используется собственное исключение <code class="docutils literal notranslate"><span class="pre">PostMachineError</span></code>:</p>
-<ul class="simple">
-<li><p>при недопустимом значении клетки;</p></li>
-<li><p>при загрузке неизвестной команды;</p></li>
-<li><p>при выходе счётчика команд за пределы программы.</p></li>
-</ul>
-<p>Метод <code class="docutils literal notranslate"><span class="pre">run()</span></code> также вызывает <code class="docutils literal notranslate"><span class="pre">PostMachineError</span></code>, если машина не
-остановилась за отведённое число шагов <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> — это позволяет
-контролируемо обрабатывать бесконечные циклы.</p>
-</section>
-<section id="id11">
-<h3>5.4. Автоматическая документация класса<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<section id="postmachine-tape">
+<h2>4. Классы PostMachine и Tape<a class="headerlink" href="#postmachine-tape" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Tape</span></code> — бесконечная двусторонняя лента (словарь <code class="docutils literal notranslate"><span class="pre">позиция</span> <span class="pre">→</span> <span class="pre">метка</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">PostMachine</span></code> — программа команд <code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">R</span> <span class="pre">V</span> <span class="pre">X</span> <span class="pre">?</span> <span class="pre">!</span></code>, методы <code class="docutils literal notranslate"><span class="pre">step</span></code>,
+<code class="docutils literal notranslate"><span class="pre">run</span></code>, <code class="docutils literal notranslate"><span class="pre">reset</span></code>, <code class="docutils literal notranslate"><span class="pre">set_tape</span></code>, <code class="docutils literal notranslate"><span class="pre">load_program</span></code>, <code class="docutils literal notranslate"><span class="pre">to_string</span></code>,
+<code class="docutils literal notranslate"><span class="pre">from_string</span></code>, <code class="docutils literal notranslate"><span class="pre">copy</span></code>. Собственное исключение <code class="docutils literal notranslate"><span class="pre">PostMachineError</span></code>.</p>
 <p id="module-lab1.src.post_machine">Post machine module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lab1.src.post_machine.PostMachine">
@@ -646,179 +406,24 @@ Position 0 is the initial one; negative positions are to the left.</p>
 </dd></dl>
 
 </section>
-</section>
-<section id="id12">
-<h2>6. Консольный интерфейс<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">lab1/src/cli.py</span></code> — меню, полностью отделённое от классов. Классы
-<code class="docutils literal notranslate"><span class="pre">BigInt</span></code> и <code class="docutils literal notranslate"><span class="pre">PostMachine</span></code> ничего не знают о модуле <code class="docutils literal notranslate"><span class="pre">cli.py</span></code>.</p>
-<p><strong>Главное меню</strong></p>
-<p>Позволяет выбрать:</p>
-<ul class="simple">
-<li><p><strong>BigInt</strong> — знаковое целое произвольной длины.</p></li>
-<li><p><strong>Post machine</strong> — машина Поста.</p></li>
-<li><p><strong>0</strong> — выход.</p></li>
-</ul>
-<p><strong>Меню BigInt</strong> — задать A и B; выполнить <code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">*</span> <span class="pre">/</span> <span class="pre">%</span></code>; составные
-<code class="docutils literal notranslate"><span class="pre">+=</span> <span class="pre">-=</span> <span class="pre">*=</span> <span class="pre">/=</span></code>; пост- и преинкремент/декремент; сравнение; преобразование
-в <code class="docutils literal notranslate"><span class="pre">int</span></code>; сериализация и чтение из строки.</p>
-<p><strong>Меню машины Поста</strong> — загрузить стандартную или собственную программу;
-загрузить ленту; выполнить один шаг; запустить до остановки; сбросить
-состояние; показать сериализованное состояние; загрузить состояние из
-текста.</p>
-<p>Интерфейс не обращается к приватным полям классов и не дублирует их
-внутреннюю логику. Каждый ввод обрабатывается через <code class="docutils literal notranslate"><span class="pre">try/except</span></code>.</p>
-<p><strong>Команда запуска</strong></p>
+<section id="id3">
+<h2>5. Консольный интерфейс<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">lab1/src/cli.py</span></code> — меню, полностью отделённое от классов.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>lab1.src.cli
 </pre></div>
 </div>
 </section>
-<section id="id13">
-<h2>7. Тестирование<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
-<p>Используются pytest и плагин pytest-cov.</p>
-<ul class="simple">
-<li><p>Всего реализовано <strong>100 тестов</strong>.</p></li>
-<li><p>Покрытие <code class="docutils literal notranslate"><span class="pre">big_int.py</span></code> и <code class="docutils literal notranslate"><span class="pre">post_machine.py</span></code> — <strong>100 %</strong>.</p></li>
-</ul>
-<p>Команда проверки:</p>
+<section id="id4">
+<h2>6. Тестирование<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<p>100 pytest-тестов, покрытие <code class="docutils literal notranslate"><span class="pre">big_int.py</span></code> и <code class="docutils literal notranslate"><span class="pre">post_machine.py</span></code> — 100 %.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>lab1/tests<span class="w"> </span>--cov<span class="o">=</span>lab1/src<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
 </pre></div>
 </div>
-<p><strong>Основные тестовые сценарии</strong></p>
-<ul class="simple">
-<li><p>создание из <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">str</span></code> и другого <code class="docutils literal notranslate"><span class="pre">BigInt</span></code>;</p></li>
-<li><p>ошибки <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> для <code class="docutils literal notranslate"><span class="pre">&quot;12a3&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;-&quot;</span></code> и строки из пробелов;</p></li>
-<li><p>сложение при переходе через десятичный разряд (<code class="docutils literal notranslate"><span class="pre">999…9</span> <span class="pre">+</span> <span class="pre">1</span></code>);</p></li>
-<li><p>умножение положительных и отрицательных чисел;</p></li>
-<li><p>деление и остаток по модулю на ноль;</p></li>
-<li><p>семантика пост- и преинкремента/декремента;</p></li>
-<li><p>перемещение головки машины Поста;</p></li>
-<li><p>условные переходы в обоих вариантах;</p></li>
-<li><p>обработка бесконечного цикла через <code class="docutils literal notranslate"><span class="pre">run(max_steps=...)</span></code>;</p></li>
-<li><p>сериализация и обратное восстановление состояния.</p></li>
-</ul>
-</section>
-<section id="id14">
-<h2>8. Документация<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
-<p>Документация генерируется Sphinx. В <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> настроены расширения
-<code class="docutils literal notranslate"><span class="pre">autodoc</span></code>, <code class="docutils literal notranslate"><span class="pre">napoleon</span></code>, <code class="docutils literal notranslate"><span class="pre">viewcode</span></code>. В <code class="docutils literal notranslate"><span class="pre">index.rst</span></code> используются
-директивы <code class="docutils literal notranslate"><span class="pre">automodule</span></code> для обоих предметных модулей, поэтому API классов
-автоматически включается в документацию.</p>
-<p>Сборка:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>lab1/docs
-sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>.<span class="w"> </span>_build/html
-</pre></div>
-</div>
-<p>Результат — <code class="docutils literal notranslate"><span class="pre">lab1/docs/_build/html/index.html</span></code>.</p>
 </section>
 <section id="ci-cd">
-<h2>9. Непрерывная интеграция и доставка (CI/CD)<a class="headerlink" href="#ci-cd" title="Link to this heading"></a></h2>
-<p>Файл <code class="docutils literal notranslate"><span class="pre">.github/workflows/ci.yml</span></code> запускается при каждом push в <code class="docutils literal notranslate"><span class="pre">main</span></code>,
-при push в ветки <code class="docutils literal notranslate"><span class="pre">feature/**</span></code>, при Pull Request в <code class="docutils literal notranslate"><span class="pre">main</span></code> и при
-создании тега <code class="docutils literal notranslate"><span class="pre">v*</span></code>.</p>
-<p><strong>Этапы pipeline</strong></p>
-<ol class="arabic simple">
-<li><p>Получение репозитория.</p></li>
-<li><p>Установка Python 3.12.</p></li>
-<li><p>Установка зависимостей из <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>.</p></li>
-<li><p>Проверка стиля кода: <code class="docutils literal notranslate"><span class="pre">flake8</span></code>.</p></li>
-<li><p>Запуск тестов с покрытием и порогом 90 %.</p></li>
-<li><p>Сборка документации Sphinx.</p></li>
-<li><p>Упаковка исходников в <code class="docutils literal notranslate"><span class="pre">lab-src.zip</span></code>.</p></li>
-<li><p>Публикация артефакта в GitHub Releases при пуше тега.</p></li>
-</ol>
-<p>Pipeline успешно выполнялся для PR №1 и для тега <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code>.</p>
-</section>
-<section id="git">
-<h2>10. Рабочий процесс Git<a class="headerlink" href="#git" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Основная ветка — <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p></li>
-<li><p>Работа велась в ветке <code class="docutils literal notranslate"><span class="pre">feature/lab1</span></code>, созданной от <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p></li>
-<li><p>Изменения фиксировались логически разделёнными коммитами.</p></li>
-<li><p>Изменения влиты в <code class="docutils literal notranslate"><span class="pre">main</span></code> через Pull Request №1.</p></li>
-<li><p>Создан тег <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code>; артефакт <code class="docutils literal notranslate"><span class="pre">lab1-src.zip</span></code> опубликован на странице
-Releases.</p></li>
-</ul>
-</section>
-<section id="c-python">
-<h2>11. Сопоставление требований C++ с Python<a class="headerlink" href="#c-python" title="Link to this heading"></a></h2>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Требование C++</p></th>
-<th class="head"><p>Реализация в Python</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Отдельные <code class="docutils literal notranslate"><span class="pre">.h</span></code> / <code class="docutils literal notranslate"><span class="pre">.cpp</span></code></p></td>
-<td><p>Отдельные модули <code class="docutils literal notranslate"><span class="pre">big_int.py</span></code>, <code class="docutils literal notranslate"><span class="pre">post_machine.py</span></code>, <code class="docutils literal notranslate"><span class="pre">cli.py</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">operator==</span></code>, <code class="docutils literal notranslate"><span class="pre">operator!=</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__eq__</span></code>, <code class="docutils literal notranslate"><span class="pre">__hash__</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">operator&lt;&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">operator&gt;&gt;</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__str__</span></code>, <code class="docutils literal notranslate"><span class="pre">to_string</span></code>, <code class="docutils literal notranslate"><span class="pre">from_string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">operator+</span> <span class="pre">-</span> <span class="pre">*</span> <span class="pre">/</span> <span class="pre">+=</span> <span class="pre">-=</span> <span class="pre">*=</span> <span class="pre">/=</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="docutils literal notranslate"><span class="pre">__truediv__</span></code>, <code class="docutils literal notranslate"><span class="pre">__floordiv__</span></code>, <code class="docutils literal notranslate"><span class="pre">__iadd__</span></code>, <code class="docutils literal notranslate"><span class="pre">__isub__</span></code>, <code class="docutils literal notranslate"><span class="pre">__imul__</span></code>, <code class="docutils literal notranslate"><span class="pre">__ifloordiv__</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">operator++</span></code>, <code class="docutils literal notranslate"><span class="pre">operator--</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">increment</span></code>, <code class="docutils literal notranslate"><span class="pre">decrement</span></code>, <code class="docutils literal notranslate"><span class="pre">pre_increment</span></code>, <code class="docutils literal notranslate"><span class="pre">pre_decrement</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>Приведение к <code class="docutils literal notranslate"><span class="pre">double</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__float__</span></code>, <code class="docutils literal notranslate"><span class="pre">__int__</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">operator&lt;</span> <span class="pre">&lt;=</span> <span class="pre">&gt;</span> <span class="pre">&gt;=</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">__lt__</span></code>, <code class="docutils literal notranslate"><span class="pre">__le__</span></code>, <code class="docutils literal notranslate"><span class="pre">__gt__</span></code>, <code class="docutils literal notranslate"><span class="pre">__ge__</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>Конструктор копирования и <code class="docutils literal notranslate"><span class="pre">operator=</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">BigInt(other_bigint)</span></code> и <code class="docutils literal notranslate"><span class="pre">copy()</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p>Деструктор</p></td>
-<td><p>Автоматическое управление памятью через сборщик мусора</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="id15">
-<h2>12. Результаты<a class="headerlink" href="#id15" title="Link to this heading"></a></h2>
-<p>Все требования лабораторной работы выполнены:</p>
-<ul class="simple">
-<li><p>реализованы оба варианта: <strong>1.6.3</strong> и <strong>1.8.1</strong>;</p></li>
-<li><p>каждый объявленный класс инкапсулирован;</p></li>
-<li><p>внутреннее состояние скрыто, публичный интерфейс предоставляется через
-свойства и специальные методы;</p></li>
-<li><p>консольный интерфейс полностью отделён от предметной логики;</p></li>
-<li><p>классы документированы Sphinx;</p></li>
-<li><p>модульные тесты обеспечивают 100 % покрытия обоих предметных модулей;</p></li>
-<li><p>CI/CD автоматически выполняет проверку стиля, тестирование с контролем
-покрытия, сборку документации и создание артефакта релиза;</p></li>
-<li><p>артефакт <code class="docutils literal notranslate"><span class="pre">lab1-src.zip</span></code> прикреплён к GitHub Release <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code>.</p></li>
-</ul>
-</section>
-<section id="id16">
-<h2>13. Воспроизведение проекта<a class="headerlink" href="#id16" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/nwaezeezinne86-prog/ppoislabs.git
-<span class="nb">cd</span><span class="w"> </span>ppoislabs
-python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
-<span class="nb">source</span><span class="w"> </span>.venv/Scripts/activate
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-<span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>lab1/tests<span class="w"> </span>--cov<span class="o">=</span>lab1/src<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
-<span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>lab1.src.cli
-</pre></div>
-</div>
-</section>
-<section id="id17">
-<h2>14. Заключение<a class="headerlink" href="#id17" title="Link to this heading"></a></h2>
-<p>Лабораторная работа позволила пройти полный цикл объектно-ориентированной
-разработки: от проектирования интерфейса класса и реализации длинной
-арифметики и машины состояний до тестирования, документирования и
-автоматизации процесса сборки.</p>
-<p>В ходе работы реализованы длинная арифметика без использования встроенных
-операций над <code class="docutils literal notranslate"><span class="pre">int</span></code>, машина Поста, консольный пользовательский интерфейс и
-независимые модульные тесты.</p>
-<p>Все основные компоненты проекта разделены по уровням, поэтому предметная
-логика не зависит от пользовательского интерфейса. Покрытие тестами двух
-основных модулей составило <strong>100 %</strong>, что превышает установленное требование
-более чем на 90 %.</p>
+<h2>7. CI/CD<a class="headerlink" href="#ci-cd" title="Link to this heading"></a></h2>
+<p>GitHub Actions: flake8, pytest с порогом 90 %, сборка Sphinx, артефакт в
+Releases при пуше тега <code class="docutils literal notranslate"><span class="pre">v*</span></code>.</p>
 </section>
 </section>
 
