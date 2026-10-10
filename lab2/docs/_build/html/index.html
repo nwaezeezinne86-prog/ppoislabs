@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Лабораторная работа №2 — предметная область «Кулинария» &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+  <title>Лабораторная работа №2 — предметная область «Кулинария» &mdash; Lab 2 — Culinary Domain 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
@@ -30,7 +30,7 @@
           
           
           <a href="#" class="icon icon-home">
-            Lab2 - Culinary Domain
+            Lab 2 — Culinary Domain
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -930,7 +930,8 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#id19">19. Консольный интерфейс</a></li>
-<li><a class="reference internal" href="#ci-cd">20. Тестирование и CI/CD</a></li>
+<li><a class="reference internal" href="#id20">20. Тестирование</a></li>
+<li><a class="reference internal" href="#ci-cd">21. CI/CD</a></li>
 </ul>
 </li>
 </ul>
@@ -941,7 +942,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Lab2 - Culinary Domain</a>
+          <a href="#">Lab 2 — Culinary Domain</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -966,23 +967,17 @@
 <strong>Проверил:</strong> [ФИО преподавателя]</p>
 <section id="id1">
 <h2>1. Цель работы<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
-<p>Спроектировать крупный ООП-проект: не менее 50 классов, 150 полей,
-100 поведений, 30 ассоциаций, 12 собственных исключений.</p>
+<p>Крупный ООП-проект: не менее 50 классов, 150 полей, 100 поведений,
+30 ассоциаций, 12 исключений.</p>
 </section>
 <section id="id2">
 <h2>2. Достигнуто<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>108 классов</p></li>
-<li><p>~250 полей</p></li>
-<li><p>~180 поведений</p></li>
-<li><p>~60 ассоциаций</p></li>
-<li><p>18 исключений</p></li>
-<li><p>450 тестов, покрытие 96 %</p></li>
-</ul>
+<p>108 классов, ~250 полей, ~180 поведений, ~60 ассоциаций, 18 исключений,
+450 тестов, покрытие 96 %.</p>
 </section>
 <section id="id3">
 <h2>3. Инструменты<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
-<p>Python 3.13, pytest, Sphinx, flake8, GitHub Actions.</p>
+<p>Python 3.13, pytest + pytest-cov, Sphinx, flake8, GitHub Actions.</p>
 </section>
 <section id="id4">
 <h2>4. Базовые типы<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
@@ -4996,13 +4991,17 @@ ReportGenerator.</p>
 </pre></div>
 </div>
 </section>
-<section id="ci-cd">
-<h2>20. Тестирование и CI/CD<a class="headerlink" href="#ci-cd" title="Link to this heading"></a></h2>
-<p>450 тестов, покрытие 96 %. GitHub Actions запускает flake8, тесты обеих
-лабораторных и обе сборки Sphinx.</p>
+<section id="id20">
+<h2>20. Тестирование<a class="headerlink" href="#id20" title="Link to this heading"></a></h2>
+<p>450 тестов, покрытие 96 %.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>lab2/tests<span class="w"> </span>--cov<span class="o">=</span>lab2/src<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
 </pre></div>
 </div>
+</section>
+<section id="ci-cd">
+<h2>21. CI/CD<a class="headerlink" href="#ci-cd" title="Link to this heading"></a></h2>
+<p>GitHub Actions запускает flake8, тесты обеих лабораторных и обе сборки
+Sphinx.</p>
 </section>
 </section>
 

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Лабораторная работа №1 — BigInt и машина Поста &mdash; Lab1 - BigInt and Post Machine 1.0.0 documentation</title>
+  <title>Лабораторная работа №1 — BigInt и машина Поста &mdash; Lab 1 — BigInt and Post Machine 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
@@ -30,7 +30,7 @@
           
           
           <a href="#" class="icon icon-home">
-            Lab1 - BigInt and Post Machine
+            Lab 1 — BigInt and Post Machine
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -106,7 +106,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Lab1 - BigInt and Post Machine</a>
+          <a href="#">Lab 1 — BigInt and Post Machine</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -131,10 +131,10 @@
 <strong>Проверил:</strong> [ФИО преподавателя]</p>
 <section id="id1">
 <h2>1. Цель работы<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
-<p>Реализовать класс-значение и класс-состояние на ООП-языке. Обеспечить
-инкапсуляцию, разделение интерфейса и реализации, модульные тесты,
-документацию Sphinx и CI/CD.</p>
-<p>Реализованы варианты:</p>
+<p>Реализовать класс-значение и класс-состояние на ООП-языке: инкапсуляция,
+разделение интерфейса и реализации, модульные тесты, документация Sphinx,
+CI/CD.</p>
+<p>Варианты:</p>
 <ul class="simple">
 <li><p><strong>1.6.3</strong> — знаковое длинное целое неограниченной длины.</p></li>
 <li><p><strong>1.8.1</strong> — машина Поста.</p></li>
@@ -142,27 +142,16 @@
 </section>
 <section id="id2">
 <h2>2. Инструменты<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Python 3.13</p></li>
-<li><p>pytest + pytest-cov</p></li>
-<li><p>Sphinx (autodoc, napoleon, viewcode)</p></li>
-<li><p>flake8</p></li>
-<li><p>GitHub Actions</p></li>
-</ul>
+<p>Python 3.13, pytest + pytest-cov, Sphinx, flake8, GitHub Actions.</p>
 </section>
 <section id="bigint">
 <h2>3. Класс BigInt<a class="headerlink" href="#bigint" title="Link to this heading"></a></h2>
 <p>Число хранится как знак (<code class="docutils literal notranslate"><span class="pre">_sign</span></code> ∈ {-1, 0, 1}) и список десятичных цифр
 (<code class="docutils literal notranslate"><span class="pre">_digits</span></code>), младшая цифра первой. Арифметика не использует встроенный
 <code class="docutils literal notranslate"><span class="pre">int</span></code>.</p>
-<p>Поддерживается:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">*</span> <span class="pre">/</span> <span class="pre">%</span></code> и составные <code class="docutils literal notranslate"><span class="pre">+=</span> <span class="pre">-=</span> <span class="pre">*=</span> <span class="pre">/=</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">increment</span></code>, <code class="docutils literal notranslate"><span class="pre">decrement</span></code>, <code class="docutils literal notranslate"><span class="pre">pre_increment</span></code>, <code class="docutils literal notranslate"><span class="pre">pre_decrement</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">==</span> <span class="pre">&lt;</span> <span class="pre">&lt;=</span> <span class="pre">&gt;</span> <span class="pre">&gt;=</span></code> и <code class="docutils literal notranslate"><span class="pre">__hash__</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">int()</span></code>, <code class="docutils literal notranslate"><span class="pre">float()</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">from_string</span></code>, <code class="docutils literal notranslate"><span class="pre">to_string</span></code>, <code class="docutils literal notranslate"><span class="pre">copy</span></code>.</p></li>
-</ul>
+<p>Поддерживается: <code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">*</span> <span class="pre">/</span> <span class="pre">%</span></code>, составные операции, инкремент/декремент,
+сравнения, приведение к <code class="docutils literal notranslate"><span class="pre">int</span></code> и <code class="docutils literal notranslate"><span class="pre">float</span></code>, чтение/запись в строку,
+копирование.</p>
 <p>Ошибки: <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>, <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>, <code class="docutils literal notranslate"><span class="pre">ZeroDivisionError</span></code>,
 <code class="docutils literal notranslate"><span class="pre">NotImplemented</span></code>.</p>
 <p id="module-lab1.src.big_int">Signed arbitrary-precision integer module.</p>

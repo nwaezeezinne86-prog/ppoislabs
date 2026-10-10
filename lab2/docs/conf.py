@@ -1,4 +1,4 @@
-"""Sphinx configuration for lab2 documentation."""
+"""Sphinx configuration for Lab 2 (equivalent of a Doxyfile)."""
 import os
 import sys
 
@@ -6,8 +6,8 @@ DOCS_DIR = os.path.abspath(os.path.dirname(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(DOCS_DIR, "..", ".."))
 sys.path.insert(0, REPO_ROOT)
 
-project = "Lab2 - Culinary Domain"
-author = "Zinne"
+project = "Lab 2 — Culinary Domain"
+author = "[ФИО]"
 release = "1.0.0"
 
 extensions = [
