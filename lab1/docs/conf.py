@@ -7,7 +7,7 @@ REPO_ROOT = os.path.abspath(os.path.join(DOCS_DIR, "..", ".."))
 sys.path.insert(0, REPO_ROOT)
 
 project = "Lab 1 — BigInt and Post Machine"
-author = "[ФИО]"
+author = "[Нваезе Э.Р.]"
 release = "1.0.0"
 
 extensions = [
