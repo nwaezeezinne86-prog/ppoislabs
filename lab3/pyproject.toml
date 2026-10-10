@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fitness-tracker"
+version = "1.0.0"
+description = "Lab 3: object-oriented fitness tracking application"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+docs = ["sphinx>=7"]
+
+[project.scripts]
+fitness-cli = "cli:main"
+
+[tool.setuptools]
+packages = ["fitness"]
+py-modules = ["cli"]
+
+[tool.ruff]
+line-length = 150
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C90"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 8
+
+[tool.coverage.run]
+source = ["fitness", "cli"]
+omit = ["tests/*", "tools/*"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]

@@ -1,0 +1,79 @@
+name: lab3-ci
+
+on:
+  push:
+    branches: [main]
+    paths: ["lab3/**", ".github/workflows/lab3.yml"]
+    tags: ["lab3-v*"]
+  pull_request:
+    paths: ["lab3/**", ".github/workflows/lab3.yml"]
+
+defaults:
+  run:
+    working-directory: lab3
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install tools
+        run: python -m pip install coverage ruff
+      - name: Static analysis (ruff)
+        run: ruff check .
+      - name: Run tests with coverage
+        run: |
+          coverage run -m unittest discover -s tests -t .
+          coverage report --fail-under=90
+
+  build:
+    needs: test-and-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build wheel and sdist
+        run: |
+          python -m pip install build
+          python -m build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lab3-dist
+          path: lab3/dist/*
+
+  docs:
+    needs: test-and-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build Sphinx documentation
+        run: |
+          python -m pip install sphinx
+          python -m sphinx -b html docs docs/_build/html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lab3-docs
+          path: lab3/docs/_build/html
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/lab3-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: lab3-dist
+          path: dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
