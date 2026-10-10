@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.equipment &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.equipment</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.equipment</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Kitchen equipment for the culinary domain."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">EquipmentBrokenError</span><span class="p">,</span> <span class="n">EquipmentUnavailableError</span>
+
+
+<div class="viewcode-block" id="Equipment">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Equipment">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Equipment</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Base class for every piece of kitchen equipment."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">capacity</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Capacity must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_in_use</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_broken</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_uses</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Equipment name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">capacity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Maximum load the equipment can handle."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span>
+
+<div class="viewcode-block" id="Equipment.is_available">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Equipment.is_available">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_available</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the equipment is free and working."""</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_use</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broken</span></div>
+
+
+<div class="viewcode-block" id="Equipment.mark_broken">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Equipment.mark_broken">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mark_broken</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark the equipment as broken."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_broken</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="Equipment.repair">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Equipment.repair">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">repair</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a broken piece of equipment to service."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_broken</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Equipment.acquire">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Equipment.acquire">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">acquire</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Acquire the equipment for a task."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broken</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EquipmentBrokenError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> is broken"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_use</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EquipmentUnavailableError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> is already in use"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_in_use</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_uses</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Equipment.release">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Equipment.release">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Release the equipment after use."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_in_use</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Equipment.uses">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Equipment.uses">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">uses</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total number of times the equipment was used."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_uses</span></div>
+
+
+<div class="viewcode-block" id="Equipment.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Equipment.describe">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a human-readable description of the equipment."""</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">!r}</span><span class="s2">, capacity=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="si">}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="Oven">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Oven">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Oven</span><span class="p">(</span><span class="n">Equipment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""An oven with a temperature range."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Oven"</span><span class="p">,</span>
+        <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">max_temp_c</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_temp_c</span> <span class="o">=</span> <span class="n">max_temp_c</span>
+
+<div class="viewcode-block" id="Oven.is_temp_allowed">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Oven.is_temp_allowed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_temp_allowed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_c</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the requested temperature is within range."""</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">temp_c</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_temp_c</span></div>
+
+
+<div class="viewcode-block" id="Oven.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Oven.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Oven up to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_temp_c</span><span class="si">}</span><span class="s2"> C, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="si">}</span><span class="s2"> trays"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Stove">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Stove">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Stove</span><span class="p">(</span><span class="n">Equipment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A stove with a number of burners."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Stove"</span><span class="p">,</span>
+        <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">burners</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_burners</span> <span class="o">=</span> <span class="n">burners</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active_burners</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Stove.light_burner">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Stove.light_burner">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">light_burner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Light one burner; raise if all are already on."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_burners</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_burners</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EquipmentUnavailableError</span><span class="p">(</span><span class="s2">"All burners are busy"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active_burners</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Stove.extinguish_burner">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Stove.extinguish_burner">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extinguish_burner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Turn off one burner."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active_burners</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_burners</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Stove.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Stove.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Stove with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_burners</span><span class="si">}</span><span class="s2"> burners"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Blender">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Blender">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Blender</span><span class="p">(</span><span class="n">Equipment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A blender with variable speed."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Blender"</span><span class="p">,</span>
+        <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">max_speed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_speed</span> <span class="o">=</span> <span class="n">max_speed</span>
+
+<div class="viewcode-block" id="Blender.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Blender.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Blender up to speed </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_speed</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Machine">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Machine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Machine</span><span class="p">(</span><span class="n">Equipment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A generic machine with a program name."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">program</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_program</span> <span class="o">=</span> <span class="n">program</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Machine.run_cycle">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Machine.run_cycle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Run one cycle; requires equipment to be acquired first."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_use</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EquipmentUnavailableError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Acquire </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> before running"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Machine.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Machine.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Machine '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' (program=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_program</span><span class="si">}</span><span class="s2">, cycles=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span><span class="si">}</span><span class="s2">)"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Mixer">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Mixer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Mixer</span><span class="p">(</span><span class="n">Equipment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A dough mixer."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Mixer"</span><span class="p">,</span>
+        <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">speed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="n">speed</span>
+
+<div class="viewcode-block" id="Mixer.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Mixer.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Mixer at speed </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Fridge">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Fridge">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Fridge</span><span class="p">(</span><span class="n">Equipment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A refrigerator with a temperature setting."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Fridge"</span><span class="p">,</span>
+        <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="n">temp_c</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_temp_c</span> <span class="o">=</span> <span class="n">temp_c</span>
+
+<div class="viewcode-block" id="Fridge.is_safe_temp">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Fridge.is_safe_temp">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_safe_temp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the temperature is in the safe range 0-8 C."""</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_temp_c</span> <span class="o">&lt;=</span> <span class="mi">8</span></div>
+
+
+<div class="viewcode-block" id="Fridge.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Fridge.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Fridge at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_temp_c</span><span class="si">}</span><span class="s2"> C"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Freezer">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Freezer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Freezer</span><span class="p">(</span><span class="n">Equipment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A freezer with a temperature setting."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Freezer"</span><span class="p">,</span>
+        <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="n">temp_c</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">18</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_temp_c</span> <span class="o">=</span> <span class="n">temp_c</span>
+
+<div class="viewcode-block" id="Freezer.is_deep_freeze">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Freezer.is_deep_freeze">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_deep_freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the temperature is -18 C or lower."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_temp_c</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">18</span></div>
+
+
+<div class="viewcode-block" id="Freezer.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Freezer.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Freezer at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_temp_c</span><span class="si">}</span><span class="s2"> C"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Workstation">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Workstation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Workstation</span><span class="p">(</span><span class="n">Equipment</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A prep workstation with a specific purpose."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">purpose</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">capacity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_purpose</span> <span class="o">=</span> <span class="n">purpose</span>
+
+<div class="viewcode-block" id="Workstation.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.equipment.Workstation.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Workstation '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_purpose</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

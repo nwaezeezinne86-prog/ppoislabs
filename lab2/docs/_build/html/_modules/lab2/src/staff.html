@@ -1,0 +1,434 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.staff &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.staff</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.staff</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Staff management: shifts, schedules, teams."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidScheduleError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.money</span><span class="w"> </span><span class="kn">import</span> <span class="n">Money</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.people</span><span class="w"> </span><span class="kn">import</span> <span class="n">Employee</span>
+
+
+<div class="viewcode-block" id="Shift">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Shift">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Shift</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A single shift: start time, end time, and assigned employee."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">employee</span><span class="p">:</span> <span class="n">Employee</span><span class="p">,</span>
+        <span class="n">day</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="n">end</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidScheduleError</span><span class="p">(</span><span class="s2">"Shift start must be before end"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_employee</span> <span class="o">=</span> <span class="n">employee</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_day</span> <span class="o">=</span> <span class="n">day</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="n">end</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">employee</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Employee</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Employee assigned to this shift."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_employee</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">day</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calendar day."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_day</span>
+
+<div class="viewcode-block" id="Shift.hours">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Shift.hours">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hours</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return shift length in hours."""</span>
+        <span class="n">start_minutes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="o">.</span><span class="n">minute</span>
+        <span class="n">end_minutes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_end</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_end</span><span class="o">.</span><span class="n">minute</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">end_minutes</span> <span class="o">-</span> <span class="n">start_minutes</span><span class="p">)</span> <span class="o">/</span> <span class="mf">60.0</span></div>
+
+
+<div class="viewcode-block" id="Shift.overlaps">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Shift.overlaps">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">"Shift"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the two shifts overlap on the same day and employee."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_day</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_day</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_employee</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_employee</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">_start</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">_end</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Shift.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Shift.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a one-line description."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_employee</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_day</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="si">:</span><span class="s2">%H:%M</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_end</span><span class="si">:</span><span class="s2">%H:%M</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Schedule">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Schedule">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Schedule</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A weekly schedule of shifts for a set of employees."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">week_start</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_week_start</span> <span class="o">=</span> <span class="n">week_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Shift</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">week_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Monday of the scheduled week."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_week_start</span>
+
+<div class="viewcode-block" id="Schedule.add_shift">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Schedule.add_shift">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">Shift</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a shift; raise on overlap with an existing one."""</span>
+        <span class="k">for</span> <span class="n">existing</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">existing</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">shift</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">InvalidScheduleError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Overlap: </span><span class="si">{</span><span class="n">existing</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">shift</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shift</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Schedule.remove_shift">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Schedule.remove_shift">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">Shift</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a shift."""</span>
+        <span class="k">if</span> <span class="n">shift</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">shift</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Schedule.shifts_for">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Schedule.shifts_for">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shifts_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">employee</span><span class="p">:</span> <span class="n">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Shift</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return all shifts assigned to a given employee."""</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">employee</span> <span class="o">==</span> <span class="n">employee</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Schedule.total_hours">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Schedule.total_hours">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_hours</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total number of scheduled hours."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">hours</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Schedule.hours_for">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Schedule.hours_for">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hours_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">employee</span><span class="p">:</span> <span class="n">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total hours for one employee."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">hours</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">shifts_for</span><span class="p">(</span><span class="n">employee</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Schedule.shift_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Schedule.shift_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shift_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total number of shifts."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Schedule.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Schedule.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a multi-line description."""</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"Schedule for week of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_week_start</span><span class="si">}</span><span class="s2">:"</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Salary">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Salary">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Salary</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A monthly salary record: base + bonuses - deductions."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">employee</span><span class="p">:</span> <span class="n">Employee</span><span class="p">,</span> <span class="n">month</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_employee</span> <span class="o">=</span> <span class="n">employee</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_month</span> <span class="o">=</span> <span class="n">month</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base</span> <span class="o">=</span> <span class="n">base</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bonuses</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Money</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deductions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Money</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Salary.add_bonus">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Salary.add_bonus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_bonus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a bonus."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bonuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Salary.add_deduction">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Salary.add_deduction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_deduction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a deduction."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deductions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Salary.net">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Salary.net">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">net</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return base + bonuses - deductions."""</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base</span>
+        <span class="k">for</span> <span class="n">bonus</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bonuses</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">bonus</span>
+        <span class="k">for</span> <span class="n">ded</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deductions</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="n">ded</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+
+<div class="viewcode-block" id="Salary.bonus_total">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Salary.bonus_total">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bonus_total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the sum of bonuses."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bonuses</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bonuses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bonuses</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">b</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+
+<div class="viewcode-block" id="Salary.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Salary.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a one-line description."""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_employee</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_month</span><span class="si">}</span><span class="s2">: net </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Staff">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Staff">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Staff</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A roster of employees."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_employees</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Employee</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Staff group name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+<div class="viewcode-block" id="Staff.hire">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Staff.hire">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">employee</span><span class="p">:</span> <span class="n">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add an employee to the roster."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_employees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Staff.fire">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Staff.fire">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">employee</span><span class="p">:</span> <span class="n">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Terminate and remove an employee."""</span>
+        <span class="k">if</span> <span class="n">employee</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_employees</span><span class="p">:</span>
+            <span class="n">employee</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_employees</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Staff.active_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Staff.active_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">active_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of active employees."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_employees</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">is_active</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="Staff.total_payroll">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Staff.total_payroll">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_payroll</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the sum of all active salaries."""</span>
+        <span class="n">active</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_employees</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">is_active</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">salary</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">active</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">salary</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+
+<div class="viewcode-block" id="Staff.find_by_name">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Staff.find_by_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Employee</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the first employee with a matching name, or None."""</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_employees</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span> <span class="o">==</span> <span class="n">full_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">e</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Staff.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Staff.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a multi-line description."""</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"Staff '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">active_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> active):"</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_employees</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s2">"active"</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">is_active</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"inactive"</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Team">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Team">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Team</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A named team of employees with a leader."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">leader</span><span class="p">:</span> <span class="n">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_leader</span> <span class="o">=</span> <span class="n">leader</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_members</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Employee</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">leader</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Team name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">leader</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Employee</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Team leader."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leader</span>
+
+<div class="viewcode-block" id="Team.add_member">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Team.add_member">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">employee</span><span class="p">:</span> <span class="n">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a member if not already present."""</span>
+        <span class="k">if</span> <span class="n">employee</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_members</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Team.remove_member">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Team.remove_member">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">employee</span><span class="p">:</span> <span class="n">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a member (except the leader)."""</span>
+        <span class="k">if</span> <span class="n">employee</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leader</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidScheduleError</span><span class="p">(</span><span class="s2">"Cannot remove the leader from the team"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">employee</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_members</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_members</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Team.size">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Team.size">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the team size."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_members</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Team.members">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Team.members">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Employee</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return a copy of the members list."""</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_members</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Team.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.staff.Team.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Team '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' (leader </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_leader</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2"> members)"</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

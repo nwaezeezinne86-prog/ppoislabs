@@ -1,0 +1,577 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.recipes &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.recipes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.recipes</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Recipes and recipe book for the culinary domain."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.allergens</span><span class="w"> </span><span class="kn">import</span> <span class="n">AllergenSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">IngredientNotFoundError</span><span class="p">,</span> <span class="n">RecipeNotFoundError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.ingredients</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ingredient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.money</span><span class="w"> </span><span class="kn">import</span> <span class="n">Money</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.nutrition</span><span class="w"> </span><span class="kn">import</span> <span class="n">Nutrition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.technique</span><span class="w"> </span><span class="kn">import</span> <span class="n">Technique</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span>
+
+
+<div class="viewcode-block" id="RecipeStep">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeStep">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RecipeStep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A single numbered step of a recipe."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">technique</span><span class="p">:</span> <span class="n">Technique</span><span class="p">,</span>
+        <span class="n">minutes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">number</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Step number must be positive"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">minutes</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Step duration must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_number</span> <span class="o">=</span> <span class="n">number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_technique</span> <span class="o">=</span> <span class="n">technique</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_minutes</span> <span class="o">=</span> <span class="n">minutes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Step number."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_number</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">technique</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Technique</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Technique used at this step."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_technique</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minutes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Duration of the step in minutes."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minutes</span>
+
+<div class="viewcode-block" id="RecipeStep.perform">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeStep.perform">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ingredient_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Perform the technique and return a description."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_technique</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">ingredient_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minutes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RecipeStep.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeStep.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a one-line description."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_number</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_description</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_minutes</span><span class="si">}</span><span class="s2"> min, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_technique</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"RecipeStep(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_number</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_description</span><span class="si">!r}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="RecipeIngredient">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeIngredient">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RecipeIngredient</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""An ingredient together with the required quantity."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ingredient</span><span class="p">:</span> <span class="n">Ingredient</span><span class="p">,</span>
+        <span class="n">quantity</span><span class="p">:</span> <span class="n">Quantity</span><span class="p">,</span>
+        <span class="n">note</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span> <span class="o">=</span> <span class="n">ingredient</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span> <span class="o">=</span> <span class="n">quantity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_note</span> <span class="o">=</span> <span class="n">note</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ingredient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ingredient</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Ingredient object."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">quantity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quantity</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Required quantity."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span>
+
+<div class="viewcode-block" id="RecipeIngredient.cost">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeIngredient.cost">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cost</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the cost of this ingredient line."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span><span class="o">.</span><span class="n">price_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RecipeIngredient.scale">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeIngredient.scale">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"RecipeIngredient"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a scaled copy."""</span>
+        <span class="k">return</span> <span class="n">RecipeIngredient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_note</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RecipeIngredient.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeIngredient.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a one-line description."""</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">" - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_note</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_note</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">"</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"RecipeIngredient(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span><span class="si">!r}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="Recipe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Recipe</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A recipe: ingredients, steps, servings, nutrition and allergens."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">servings</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Recipe name must not be empty"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">servings</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Servings must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_servings</span> <span class="o">=</span> <span class="n">servings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RecipeIngredient</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_steps</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RecipeStep</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nutrition_per_100g</span> <span class="o">=</span> <span class="n">Nutrition</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Recipe name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">servings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Number of servings."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_servings</span>
+
+<div class="viewcode-block" id="Recipe.add_ingredient">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.add_ingredient">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_ingredient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">RecipeIngredient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add one ingredient line."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Recipe.remove_ingredient">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.remove_ingredient">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_ingredient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove an ingredient line by ingredient name."""</span>
+        <span class="n">before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">name</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">)</span> <span class="o">==</span> <span class="n">before</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IngredientNotFoundError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Recipe.add_step">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.add_step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">RecipeStep</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add one step to the recipe."""</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_steps</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">step</span><span class="o">.</span><span class="n">number</span> <span class="o">!=</span> <span class="n">expected</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected step </span><span class="si">{</span><span class="n">expected</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">number</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">step</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Recipe.set_nutrition">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.set_nutrition">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_nutrition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nutrition</span><span class="p">:</span> <span class="n">Nutrition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set nutrition per 100 g."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nutrition_per_100g</span> <span class="o">=</span> <span class="n">nutrition</span></div>
+
+
+<div class="viewcode-block" id="Recipe.ingredient_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.ingredient_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ingredient_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of ingredient lines."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Recipe.step_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.step_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of steps."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_steps</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Recipe.total_time_minutes">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.total_time_minutes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_time_minutes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total cooking time in minutes."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">minutes</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steps</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Recipe.total_cost">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.total_cost">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total cost of all ingredients."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">item</span><span class="o">.</span><span class="n">cost</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+
+<div class="viewcode-block" id="Recipe.cost_per_serving">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.cost_per_serving">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cost_per_serving</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the cost of one serving."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_cost</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_servings</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Recipe.allergens">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.allergens">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">allergens</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllergenSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the union of all ingredient allergens."""</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">AllergenSet</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">allergens</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Recipe.scale">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.scale">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Recipe"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a scaled copy with the same steps but scaled ingredients."""</span>
+        <span class="n">scaled</span> <span class="o">=</span> <span class="n">Recipe</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> (x</span><span class="si">{</span><span class="n">factor</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_servings</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_description</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">:</span>
+            <span class="n">scaled</span><span class="o">.</span><span class="n">add_ingredient</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">factor</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steps</span><span class="p">:</span>
+            <span class="n">scaled</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+        <span class="n">scaled</span><span class="o">.</span><span class="n">set_nutrition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nutrition_per_100g</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scaled</span></div>
+
+
+<div class="viewcode-block" id="Recipe.nutrition_per_serving">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.nutrition_per_serving">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nutrition_per_serving</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Nutrition</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return nutrition per one serving."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nutrition_per_100g</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_servings</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Recipe.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.Recipe.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a multi-line description of the recipe."""</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"Recipe: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_servings</span><span class="si">}</span><span class="s2"> servings)"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_description</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Ingredients:"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Steps:"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steps</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_servings</span><span class="si">}</span><span class="s2"> servings, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total_time_minutes</span><span class="p">()</span><span class="si">}</span><span class="s2"> min)"</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Recipe(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">!r}</span><span class="s2">, servings=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_servings</span><span class="si">}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="RecipeBook">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RecipeBook</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A collection of recipes indexed by name."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Recipe Book"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Recipe</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Title of the book."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_title</span>
+
+<div class="viewcode-block" id="RecipeBook.add">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="n">Recipe</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a recipe, replacing any existing one with the same name."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="p">[</span><span class="n">recipe</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">recipe</span></div>
+
+
+<div class="viewcode-block" id="RecipeBook.find">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook.find">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Recipe</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a recipe by name or raise RecipeNotFoundError."""</span>
+        <span class="n">recipe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">recipe</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RecipeNotFoundError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">recipe</span></div>
+
+
+<div class="viewcode-block" id="RecipeBook.remove">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook.remove">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a recipe by name."""</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RecipeNotFoundError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="RecipeBook.all">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook.all">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Recipe</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return a list of all recipes."""</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="RecipeBook.count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook.count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of recipes."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RecipeBook.find_by_allergen_free">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook.find_by_allergen_free">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_by_allergen_free</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forbidden</span><span class="p">:</span> <span class="n">AllergenSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Recipe</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return recipes that do not contain the forbidden allergens."""</span>
+        <span class="n">result</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Recipe</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">recipe</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">recipe</span><span class="o">.</span><span class="n">allergens</span><span class="p">()</span><span class="o">.</span><span class="n">intersects</span><span class="p">(</span><span class="n">forbidden</span><span class="p">):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recipe</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="RecipeBook.find_cheaper_than">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook.find_cheaper_than">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_cheaper_than</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Recipe</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return recipes whose total cost is at most ``limit``."""</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">total_cost</span><span class="p">()</span><span class="o">.</span><span class="n">amount_minor</span> <span class="o">&lt;=</span> <span class="n">limit</span><span class="o">.</span><span class="n">amount_minor</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="RecipeBook.find_faster_than">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook.find_faster_than">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_faster_than</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minutes</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Recipe</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return recipes that cook in at most ``minutes`` minutes."""</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">total_time_minutes</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">minutes</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="RecipeBook.total_cost">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeBook.total_cost">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the sum of all recipes' costs."""</span>
+        <span class="n">recipes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">recipes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">recipes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">total_cost</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">recipes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">total_cost</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recipes</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2"> recipes)"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"RecipeBook(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="RecipeAnalyzer">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeAnalyzer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RecipeAnalyzer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Analysis helpers over Recipe instances."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="n">Recipe</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span> <span class="o">=</span> <span class="n">recipe</span>
+
+<div class="viewcode-block" id="RecipeAnalyzer.ingredient_names">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeAnalyzer.ingredient_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ingredient_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return ingredient names in order."""</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="RecipeAnalyzer.most_expensive_ingredient">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeAnalyzer.most_expensive_ingredient">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">most_expensive_ingredient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the name of the most expensive ingredient."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IngredientNotFoundError</span><span class="p">(</span><span class="s2">"Recipe has no ingredients"</span><span class="p">)</span>
+        <span class="n">expensive</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">_ingredients</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">cost</span><span class="p">()</span><span class="o">.</span><span class="n">amount_minor</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">expensive</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="RecipeAnalyzer.average_step_minutes">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeAnalyzer.average_step_minutes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">average_step_minutes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the average duration of a step, or 0 if there are none."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">_steps</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">total_time_minutes</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">_steps</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RecipeAnalyzer.cost_breakdown">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeAnalyzer.cost_breakdown">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cost_breakdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return a mapping from ingredient name to cost in minor units."""</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">i</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">cost</span><span class="p">()</span><span class="o">.</span><span class="n">amount_minor</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">_ingredients</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="RecipeAnalyzer.is_low_calorie">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeAnalyzer.is_low_calorie">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_low_calorie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold_kcal</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">200.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the recipe has fewer than ``threshold_kcal`` per serving."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">nutrition_per_serving</span><span class="p">()</span><span class="o">.</span><span class="n">kcal</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">threshold_kcal</span></div>
+
+
+<div class="viewcode-block" id="RecipeAnalyzer.technique_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeAnalyzer.technique_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">technique_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return how many distinct techniques are used."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">({</span><span class="n">s</span><span class="o">.</span><span class="n">technique</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">_steps</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="RecipeAnalyzer.summary">
+<a class="viewcode-back" href="../../../index.html#lab2.src.recipes.RecipeAnalyzer.summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a short analysis summary."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">ingredient_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> ingredients, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">step_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> steps, "</span>
+            <span class="sa">f</span><span class="s2">"cost </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_recipe</span><span class="o">.</span><span class="n">total_cost</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

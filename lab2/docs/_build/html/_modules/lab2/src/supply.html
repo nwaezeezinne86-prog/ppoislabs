@@ -1,0 +1,580 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.supply &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.supply</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.supply</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Supply chain: suppliers, purchase orders, deliveries, invoices, inventory."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">InsufficientFundsError</span><span class="p">,</span>
+    <span class="n">InvalidQuantityError</span><span class="p">,</span>
+    <span class="n">OrderAlreadyClosedError</span><span class="p">,</span>
+    <span class="n">SupplierUnavailableError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.ingredients</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ingredient</span><span class="p">,</span> <span class="n">IngredientLot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.money</span><span class="w"> </span><span class="kn">import</span> <span class="n">Money</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span>
+
+
+<div class="viewcode-block" id="Supplier">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Supplier">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Supplier</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A company that supplies ingredients."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">contact_email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">min_order</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span>
+        <span class="n">rating</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">InvalidQuantityError</span><span class="p">(</span><span class="s2">"Supplier name must not be empty"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_contact_email</span> <span class="o">=</span> <span class="n">contact_email</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_order</span> <span class="o">=</span> <span class="n">min_order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rating</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">rating</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_available</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Money</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Supplier name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rating</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Supplier rating 0-5."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rating</span>
+
+<div class="viewcode-block" id="Supplier.is_available">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Supplier.is_available">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_available</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the supplier can take new orders."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_available</span></div>
+
+
+<div class="viewcode-block" id="Supplier.suspend">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Supplier.suspend">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">suspend</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Temporarily suspend the supplier."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_available</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Supplier.resume">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Supplier.resume">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the supplier to service."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_available</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="Supplier.add_to_catalog">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Supplier.add_to_catalog">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_to_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ingredient</span><span class="p">:</span> <span class="n">Ingredient</span><span class="p">,</span> <span class="n">unit_price</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add or replace an ingredient in the catalog."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">[</span><span class="n">ingredient</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit_price</span></div>
+
+
+<div class="viewcode-block" id="Supplier.price_for">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Supplier.price_for">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">price_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ingredient</span><span class="p">:</span> <span class="n">Ingredient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the catalog price or the ingredient's default price."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ingredient</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">ingredient</span><span class="o">.</span><span class="n">_price_per_unit</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Supplier.has">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Supplier.has">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ingredient</span><span class="p">:</span> <span class="n">Ingredient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the ingredient is in the catalog."""</span>
+        <span class="k">return</span> <span class="n">ingredient</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span></div>
+
+
+<div class="viewcode-block" id="Supplier.catalog_size">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Supplier.catalog_size">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">catalog_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of catalog entries."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Supplier.can_accept">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Supplier.can_accept">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">can_accept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the order total meets the minimum."""</span>
+        <span class="k">return</span> <span class="n">total</span><span class="o">.</span><span class="n">amount_minor</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_order</span><span class="o">.</span><span class="n">amount_minor</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Supplier </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> (rating </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rating</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog_size</span><span class="p">()</span><span class="si">}</span><span class="s2"> items)"</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Supplier(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">!r}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="PurchaseOrderLine">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrderLine">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PurchaseOrderLine</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A single line in a purchase order."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ingredient</span><span class="p">:</span> <span class="n">Ingredient</span><span class="p">,</span>
+        <span class="n">quantity</span><span class="p">:</span> <span class="n">Quantity</span><span class="p">,</span>
+        <span class="n">unit_price</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">quantity</span><span class="o">.</span><span class="n">amount</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidQuantityError</span><span class="p">(</span><span class="s2">"Order line quantity must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span> <span class="o">=</span> <span class="n">ingredient</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span> <span class="o">=</span> <span class="n">quantity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unit_price</span> <span class="o">=</span> <span class="n">unit_price</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ingredient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ingredient</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Ingredient being ordered."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">quantity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quantity</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Ordered quantity."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span>
+
+<div class="viewcode-block" id="PurchaseOrderLine.line_total">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrderLine.line_total">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">line_total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return unit price x quantity converted to the ingredient's unit."""</span>
+        <span class="n">converted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit_price</span> <span class="o">*</span> <span class="n">converted</span><span class="o">.</span><span class="n">amount</span></div>
+
+
+<div class="viewcode-block" id="PurchaseOrderLine.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrderLine.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a one-line description."""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantity</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ingredient</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> @ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_unit_price</span><span class="si">}</span><span class="s2">"</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="PurchaseOrder">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PurchaseOrder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A purchase order for a supplier."""</span>
+
+    <span class="n">STATUS_OPEN</span> <span class="o">=</span> <span class="s2">"open"</span>
+    <span class="n">STATUS_SENT</span> <span class="o">=</span> <span class="s2">"sent"</span>
+    <span class="n">STATUS_RECEIVED</span> <span class="o">=</span> <span class="s2">"received"</span>
+    <span class="n">STATUS_CANCELLED</span> <span class="o">=</span> <span class="s2">"cancelled"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supplier</span><span class="p">:</span> <span class="n">Supplier</span><span class="p">,</span> <span class="n">order_date</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_supplier</span> <span class="o">=</span> <span class="n">supplier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order_date</span> <span class="o">=</span> <span class="n">order_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PurchaseOrderLine</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_OPEN</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supplier</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Supplier</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Supplier for this order."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplier</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Current status."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
+
+<div class="viewcode-block" id="PurchaseOrder.add_line">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrder.add_line">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="n">PurchaseOrderLine</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a line; raise if the order is not open."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_OPEN</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OrderAlreadyClosedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Cannot modify order in status </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_status</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PurchaseOrder.total">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrder.total">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total cost of all lines."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">line_total</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">line_total</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+
+<div class="viewcode-block" id="PurchaseOrder.send">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrder.send">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Transition the order to 'sent'."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_OPEN</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OrderAlreadyClosedError</span><span class="p">(</span><span class="s2">"Only open orders can be sent"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplier</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">SupplierUnavailableError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_supplier</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not available"</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplier</span><span class="o">.</span><span class="n">can_accept</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="n">InsufficientFundsError</span><span class="p">(</span>
+                <span class="s2">"Order total is below the supplier's minimum"</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_SENT</span></div>
+
+
+<div class="viewcode-block" id="PurchaseOrder.receive">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrder.receive">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">receive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Transition the order to 'received'."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_SENT</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OrderAlreadyClosedError</span><span class="p">(</span><span class="s2">"Only sent orders can be received"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_RECEIVED</span></div>
+
+
+<div class="viewcode-block" id="PurchaseOrder.cancel">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrder.cancel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Cancel the order unless it has been received."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_RECEIVED</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OrderAlreadyClosedError</span><span class="p">(</span><span class="s2">"Cannot cancel a received order"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_CANCELLED</span></div>
+
+
+<div class="viewcode-block" id="PurchaseOrder.line_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrder.line_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">line_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of lines."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PurchaseOrder.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.PurchaseOrder.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a multi-line description."""</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">"PurchaseOrder to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_supplier</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_status</span><span class="si">}</span><span class="s2">), total </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Delivery">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Delivery">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Delivery</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A physical delivery of one purchase order."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="n">PurchaseOrder</span><span class="p">,</span>
+        <span class="n">delivery_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delivery_date</span> <span class="o">=</span> <span class="n">delivery_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delivered</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PurchaseOrder</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Order being delivered."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delivery_date</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Scheduled date."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delivery_date</span>
+
+<div class="viewcode-block" id="Delivery.mark_delivered">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Delivery.mark_delivered">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mark_delivered</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark the delivery as completed and set the order to 'received'."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delivered</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="o">.</span><span class="n">receive</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Delivery.is_delivered">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Delivery.is_delivered">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_delivered</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the delivery was completed."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delivered</span></div>
+
+
+<div class="viewcode-block" id="Delivery.late_by_days">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Delivery.late_by_days">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">late_by_days</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">today</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return how many days late the delivery is (0 if on time)."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delivered</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">today</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delivery_date</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Delivery.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Delivery.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s2">"delivered"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delivered</span> <span class="k">else</span> <span class="s2">"pending"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Delivery to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_address</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_delivery_date</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">]"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Invoice">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Invoice">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Invoice</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""An invoice for a purchase order."""</span>
+
+    <span class="n">STATUS_ISSUED</span> <span class="o">=</span> <span class="s2">"issued"</span>
+    <span class="n">STATUS_PAID</span> <span class="o">=</span> <span class="s2">"paid"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">PurchaseOrder</span><span class="p">,</span> <span class="n">invoice_number</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_invoice_number</span> <span class="o">=</span> <span class="n">invoice_number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_ISSUED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_payments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Money</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">invoice_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Invoice number."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invoice_number</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Current status."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
+
+<div class="viewcode-block" id="Invoice.total">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Invoice.total">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total from the order."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="o">.</span><span class="n">total</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Invoice.paid_amount">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Invoice.paid_amount">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">paid_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the sum of payments made so far."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payments</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Money</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payments</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">p</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+
+<div class="viewcode-block" id="Invoice.remaining">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Invoice.remaining">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return how much is still owed."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">paid_amount</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Invoice.pay">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Invoice.pay">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Register a payment; raises on overpayment."""</span>
+        <span class="k">if</span> <span class="n">amount</span><span class="o">.</span><span class="n">amount_minor</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">remaining</span><span class="p">()</span><span class="o">.</span><span class="n">amount_minor</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InsufficientFundsError</span><span class="p">(</span><span class="s2">"Overpayment not allowed"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_payments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">paid_amount</span><span class="p">()</span><span class="o">.</span><span class="n">amount_minor</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span><span class="o">.</span><span class="n">amount_minor</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_PAID</span></div>
+
+
+<div class="viewcode-block" id="Invoice.is_paid">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Invoice.is_paid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_paid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the invoice has been fully paid."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_PAID</span></div>
+
+
+<div class="viewcode-block" id="Invoice.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Invoice.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a one-line description."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Invoice </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_invoice_number</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_status</span><span class="si">}</span><span class="s2">], "</span>
+            <span class="sa">f</span><span class="s2">"total </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span><span class="si">}</span><span class="s2">, remaining </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">remaining</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Inventory">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Inventory">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Inventory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A collection of ingredient lots with reorder logic."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lots</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">IngredientLot</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reorder_levels</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Inventory.add_lot">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Inventory.add_lot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_lot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lot</span><span class="p">:</span> <span class="n">IngredientLot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a lot to the inventory."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lot</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Inventory.set_reorder_level">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Inventory.set_reorder_level">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_reorder_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ingredient_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set the reorder threshold for an ingredient."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reorder_levels</span><span class="p">[</span><span class="n">ingredient_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantity</span></div>
+
+
+<div class="viewcode-block" id="Inventory.total_quantity">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Inventory.total_quantity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_quantity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ingredient_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total amount of an ingredient across all lots."""</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">lot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lots</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lot</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">ingredient_name</span><span class="p">:</span>
+                <span class="n">total</span> <span class="o">+=</span> <span class="n">lot</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">amount</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+
+<div class="viewcode-block" id="Inventory.needs_reorder">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Inventory.needs_reorder">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">needs_reorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ingredient_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the total quantity is below the reorder level."""</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reorder_levels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ingredient_name</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_quantity</span><span class="p">(</span><span class="n">ingredient_name</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">level</span></div>
+
+
+<div class="viewcode-block" id="Inventory.expired_lots">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Inventory.expired_lots">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expired_lots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">today</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">IngredientLot</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return all lots that have expired."""</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">lot</span> <span class="k">for</span> <span class="n">lot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lots</span> <span class="k">if</span> <span class="n">lot</span><span class="o">.</span><span class="n">is_expired</span><span class="p">(</span><span class="n">today</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="Inventory.discard_expired">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Inventory.discard_expired">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">discard_expired</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">today</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove expired lots; return how many were discarded."""</span>
+        <span class="n">expired</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expired_lots</span><span class="p">(</span><span class="n">today</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">lot</span> <span class="ow">in</span> <span class="n">expired</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lots</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">lot</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">expired</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Inventory.lot_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Inventory.lot_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lot_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of lots."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lots</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Inventory.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.supply.Inventory.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a one-line description."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Inventory: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lot_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> lots, "</span>
+            <span class="sa">f</span><span class="s2">"reorder rules for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reorder_levels</span><span class="p">)</span><span class="si">}</span><span class="s2"> ingredients"</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.kitchen &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.kitchen</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.kitchen</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Kitchen operations: workstations, tasks, task queues."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.equipment</span><span class="w"> </span><span class="kn">import</span> <span class="n">Equipment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">EquipmentUnavailableError</span><span class="p">,</span> <span class="n">InvalidScheduleError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.people</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cook</span>
+
+
+<div class="viewcode-block" id="KitchenTask">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.KitchenTask">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">KitchenTask</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A single task to be performed at a workstation."""</span>
+
+    <span class="n">STATUS_PENDING</span> <span class="o">=</span> <span class="s2">"pending"</span>
+    <span class="n">STATUS_RUNNING</span> <span class="o">=</span> <span class="s2">"running"</span>
+    <span class="n">STATUS_DONE</span> <span class="o">=</span> <span class="s2">"done"</span>
+    <span class="n">STATUS_FAILED</span> <span class="o">=</span> <span class="s2">"failed"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">minutes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">assigned_cook</span><span class="p">:</span> <span class="n">Cook</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">minutes</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidScheduleError</span><span class="p">(</span><span class="s2">"Task duration must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_minutes</span> <span class="o">=</span> <span class="n">minutes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span> <span class="o">=</span> <span class="n">assigned_cook</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_PENDING</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Task name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minutes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Planned duration in minutes."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minutes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Current status."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">assigned_cook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cook</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Cook assigned to the task, if any."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span>
+
+<div class="viewcode-block" id="KitchenTask.assign_to">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.KitchenTask.assign_to">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">assign_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cook</span><span class="p">:</span> <span class="n">Cook</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Assign the task to a cook."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span> <span class="o">=</span> <span class="n">cook</span></div>
+
+
+<div class="viewcode-block" id="KitchenTask.start">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.KitchenTask.start">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">now</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Start the task."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_PENDING</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidScheduleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Task </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> is not pending (status=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_status</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_RUNNING</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started_at</span> <span class="o">=</span> <span class="n">now</span></div>
+
+
+<div class="viewcode-block" id="KitchenTask.finish">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.KitchenTask.finish">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">now</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark the task as done."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_RUNNING</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidScheduleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Task </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> is not running (status=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_status</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_DONE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished_at</span> <span class="o">=</span> <span class="n">now</span></div>
+
+
+<div class="viewcode-block" id="KitchenTask.fail">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.KitchenTask.fail">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark the task as failed."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATUS_FAILED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">]"</span> <span class="k">if</span> <span class="n">reason</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span></div>
+
+
+<div class="viewcode-block" id="KitchenTask.actual_duration">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.KitchenTask.actual_duration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">actual_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">timedelta</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the actual duration if the task has finished."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_started_at</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finished_at</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finished_at</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_started_at</span></div>
+
+
+<div class="viewcode-block" id="KitchenTask.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.KitchenTask.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">cook_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span> <span class="k">else</span> <span class="s2">"unassigned"</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Task '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_minutes</span><span class="si">}</span><span class="s2"> min, </span><span class="si">{</span><span class="n">cook_name</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"status=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_status</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Workstation">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Workstation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A cooking station with equipment and an assigned cook."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">purpose</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">equipment</span><span class="p">:</span> <span class="n">Equipment</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_purpose</span> <span class="o">=</span> <span class="n">purpose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_equipment</span> <span class="o">=</span> <span class="n">equipment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span><span class="p">:</span> <span class="n">Cook</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">KitchenTask</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Workstation name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">purpose</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""What this station is used for."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_purpose</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">equipment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Equipment</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Equipment mounted on this station."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equipment</span>
+
+<div class="viewcode-block" id="Workstation.assign_cook">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation.assign_cook">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">assign_cook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cook</span><span class="p">:</span> <span class="n">Cook</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Assign a cook to this station."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span> <span class="o">=</span> <span class="n">cook</span></div>
+
+
+<div class="viewcode-block" id="Workstation.unassign_cook">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation.unassign_cook">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unassign_cook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Clear the assigned cook."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Workstation.queue_task">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation.queue_task">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">queue_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">KitchenTask</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Queue a task at this station."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Workstation.pop_next">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation.pop_next">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pop_next</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KitchenTask</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the next pending task or None."""</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">KitchenTask</span><span class="o">.</span><span class="n">STATUS_PENDING</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">task</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Workstation.task_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation.task_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">task_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total number of queued tasks."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Workstation.pending_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation.pending_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pending_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return how many tasks are still pending."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="mi">1</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span>
+            <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">KitchenTask</span><span class="o">.</span><span class="n">STATUS_PENDING</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Workstation.acquire_equipment">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation.acquire_equipment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">acquire_equipment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Acquire this station's equipment."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equipment</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EquipmentUnavailableError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Station </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> has no equipment"</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_equipment</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Workstation.release_equipment">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation.release_equipment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">release_equipment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Release this station's equipment."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equipment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_equipment</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Workstation.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Workstation.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">cook_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_cook</span> <span class="k">else</span> <span class="s2">"unassigned"</span>
+        <span class="n">eq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equipment</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equipment</span> <span class="k">else</span> <span class="s2">"no equipment"</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Workstation '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_purpose</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">cook_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">eq</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> tasks)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Kitchen">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Kitchen">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Kitchen</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The kitchen itself: stations and a running queue of tasks."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Workstation</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Kitchen name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+<div class="viewcode-block" id="Kitchen.add_station">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Kitchen.add_station">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station</span><span class="p">:</span> <span class="n">Workstation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a station to the kitchen."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">station</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Kitchen.remove_station">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Kitchen.remove_station">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a station by name."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stations</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stations</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Kitchen.find_station">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Kitchen.find_station">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Workstation</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a station by name or None."""</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">s</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Kitchen.station_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Kitchen.station_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">station_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of stations."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stations</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Kitchen.total_pending_tasks">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Kitchen.total_pending_tasks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_pending_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total number of pending tasks across all stations."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">pending_count</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stations</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Kitchen.all_tasks">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Kitchen.all_tasks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">KitchenTask</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return all tasks across all stations."""</span>
+        <span class="n">result</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">KitchenTask</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stations</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">_tasks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Kitchen.find_task">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Kitchen.find_task">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KitchenTask</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the first task with a matching name or None."""</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_tasks</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">task</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Kitchen.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.Kitchen.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Kitchen '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">station_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> stations, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total_pending_tasks</span><span class="p">()</span><span class="si">}</span><span class="s2"> pending tasks)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ShiftHandover">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.ShiftHandover">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShiftHandover</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Record of a kitchen shift handover between two cooks."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">kitchen</span><span class="p">:</span> <span class="n">Kitchen</span><span class="p">,</span>
+        <span class="n">outgoing</span><span class="p">:</span> <span class="n">Cook</span><span class="p">,</span>
+        <span class="n">incoming</span><span class="p">:</span> <span class="n">Cook</span><span class="p">,</span>
+        <span class="n">when</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">outgoing</span> <span class="o">==</span> <span class="n">incoming</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidScheduleError</span><span class="p">(</span><span class="s2">"Handover requires two distinct cooks"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kitchen</span> <span class="o">=</span> <span class="n">kitchen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_outgoing</span> <span class="o">=</span> <span class="n">outgoing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_incoming</span> <span class="o">=</span> <span class="n">incoming</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_when</span> <span class="o">=</span> <span class="n">when</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">when</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Handover timestamp."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_when</span>
+
+<div class="viewcode-block" id="ShiftHandover.add_note">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.ShiftHandover.add_note">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_note</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">note</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a note for the incoming cook."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">note</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ShiftHandover.note_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.ShiftHandover.note_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">note_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of notes."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_notes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ShiftHandover.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.kitchen.ShiftHandover.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Handover from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_outgoing</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> to "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_incoming</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_when</span><span class="si">:</span><span class="s2">%Y-%m-%d %H:%M</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">note_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> notes)"</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

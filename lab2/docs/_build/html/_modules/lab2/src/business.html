@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.business &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.business</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.business</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Business entities: restaurants, branches, tables, reservations, reviews."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ReservationConflictError</span><span class="p">,</span>
+    <span class="n">TableNotFoundError</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="Table">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Table">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Table</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A physical table in a restaurant."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seats</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"indoor"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">number</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Table number must be positive"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">seats</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Table seats must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_number</span> <span class="o">=</span> <span class="n">number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seats</span> <span class="o">=</span> <span class="n">seats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_location</span> <span class="o">=</span> <span class="n">location</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Table number."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_number</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">seats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Number of seats."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seats</span>
+
+<div class="viewcode-block" id="Table.can_host">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Table.can_host">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">can_host</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guests</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the table can seat the given number of guests."""</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">guests</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seats</span></div>
+
+
+<div class="viewcode-block" id="Table.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Table.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Table #</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_number</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_seats</span><span class="si">}</span><span class="s2"> seats, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_location</span><span class="si">}</span><span class="s2">)"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Reservation">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Reservation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Reservation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A table reservation for a given date and time."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">customer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">table</span><span class="p">:</span> <span class="n">Table</span><span class="p">,</span>
+        <span class="n">day</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span>
+        <span class="n">hours</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hours</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Reservation duration must be positive"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="o">.</span><span class="n">can_host</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ReservationConflictError</span><span class="p">(</span><span class="s2">"Table cannot host any guests"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_customer_name</span> <span class="o">=</span> <span class="n">customer_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_day</span> <span class="o">=</span> <span class="n">day</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hours</span> <span class="o">=</span> <span class="n">hours</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cancelled</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">customer_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Customer name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_customer_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Reserved table."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">day</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Reservation date."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_day</span>
+
+<div class="viewcode-block" id="Reservation.end_time_minutes">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Reservation.end_time_minutes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">end_time_minutes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return end time as minutes since midnight."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="o">.</span><span class="n">minute</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hours</span> <span class="o">*</span> <span class="mi">60</span></div>
+
+
+<div class="viewcode-block" id="Reservation.overlaps">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Reservation.overlaps">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">"Reservation"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if two reservations overlap on the same table/day."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_day</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_day</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_table</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">start_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="o">.</span><span class="n">minute</span>
+        <span class="n">start_b</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_start</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">_start</span><span class="o">.</span><span class="n">minute</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end_time_minutes</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">start_b</span>
+            <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">end_time_minutes</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">start_a</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Reservation.cancel">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Reservation.cancel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Cancel the reservation."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cancelled</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="Reservation.is_cancelled">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Reservation.is_cancelled">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_cancelled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the reservation was cancelled."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cancelled</span></div>
+
+
+<div class="viewcode-block" id="Reservation.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Reservation.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s2">"cancelled"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cancelled</span> <span class="k">else</span> <span class="s2">"active"</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Reservation for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_customer_name</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_day</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="si">:</span><span class="s2">%H:%M</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_hours</span><span class="si">}</span><span class="s2">h [</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">]"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Review">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Review">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Review</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A customer review with a rating and text."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rating</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">rating</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Rating must be between 1 and 5"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_author</span> <span class="o">=</span> <span class="n">author</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rating</span> <span class="o">=</span> <span class="n">rating</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_helpful_votes</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">author</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Review author."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_author</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rating</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Rating from 1 to 5."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rating</span>
+
+<div class="viewcode-block" id="Review.vote_helpful">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Review.vote_helpful">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vote_helpful</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Register a helpful vote."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_helpful_votes</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Review.helpful_votes">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Review.helpful_votes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">helpful_votes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of helpful votes."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_helpful_votes</span></div>
+
+
+<div class="viewcode-block" id="Review.is_positive">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Review.is_positive">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_positive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the rating is 4 or 5."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rating</span> <span class="o">&gt;=</span> <span class="mi">4</span></div>
+
+
+<div class="viewcode-block" id="Review.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Review.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_author</span><span class="si">}</span><span class="s2"> rated </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rating</span><span class="si">}</span><span class="s2">/5: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Promotion">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Promotion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Promotion</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A discount promotion available in a restaurant."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">discount_percent</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">discount_percent</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Discount must be between 0 and 100"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_discount_percent</span> <span class="o">=</span> <span class="n">discount_percent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Promotion name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">discount_percent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Discount percent."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_discount_percent</span>
+
+<div class="viewcode-block" id="Promotion.is_active">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Promotion.is_active">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True while the promotion is active."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span></div>
+
+
+<div class="viewcode-block" id="Promotion.deactivate">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Promotion.deactivate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deactivate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Deactivate the promotion."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Promotion.apply_to">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Promotion.apply_to">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount_minor</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the discounted amount in minor units."""</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">100.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_discount_percent</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">amount_minor</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Promotion.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Promotion.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s2">"active"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="k">else</span> <span class="s2">"inactive"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Promotion </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> (-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_discount_percent</span><span class="si">}</span><span class="s2">%) [</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">]"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Branch">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Branch">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Branch</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A branch of a restaurant chain."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seats</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">seats</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Branch seats must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seats</span> <span class="o">=</span> <span class="n">seats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Table</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reservations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reservation</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reviews</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Review</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Branch name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+<div class="viewcode-block" id="Branch.add_table">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Branch.add_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="n">Table</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a table to the branch."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Branch.find_table">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Branch.find_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a table by number or raise TableNotFoundError."""</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">number</span> <span class="o">==</span> <span class="n">number</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">t</span>
+        <span class="k">raise</span> <span class="n">TableNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Table #</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Branch.reserve">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Branch.reserve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reserve</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">customer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">table_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">day</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span>
+        <span class="n">hours</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Reservation</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Reserve a table, raising on conflict."""</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_table</span><span class="p">(</span><span class="n">table_number</span><span class="p">)</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">Reservation</span><span class="p">(</span><span class="n">customer_name</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">hours</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">existing</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reservations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">existing</span><span class="o">.</span><span class="n">is_cancelled</span><span class="p">():</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">existing</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">new</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ReservationConflictError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Conflict with </span><span class="si">{</span><span class="n">existing</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reservations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new</span></div>
+
+
+<div class="viewcode-block" id="Branch.add_review">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Branch.add_review">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_review</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">review</span><span class="p">:</span> <span class="n">Review</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a review for the branch."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reviews</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">review</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Branch.average_rating">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Branch.average_rating">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">average_rating</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the average rating, 0 if there are no reviews."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reviews</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">rating</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reviews</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">total</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reviews</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Branch.table_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Branch.table_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">table_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of tables."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Branch.reservation_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Branch.reservation_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reservation_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of reservations (cancelled included)."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reservations</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Branch.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Branch.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Branch '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_address</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">table_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> tables, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_seats</span><span class="si">}</span><span class="s2"> seats, "</span>
+            <span class="sa">f</span><span class="s2">"avg rating </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">average_rating</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Restaurant">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Restaurant</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The top-level restaurant with branches and promotions."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Restaurant name must not be empty"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_branches</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Branch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_promotions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Promotion</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Restaurant name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+<div class="viewcode-block" id="Restaurant.add_branch">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant.add_branch">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">branch</span><span class="p">:</span> <span class="n">Branch</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a branch."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_branches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">branch</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Restaurant.remove_branch">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant.remove_branch">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a branch by name."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_branches</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_branches</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Restaurant.find_branch">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant.find_branch">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Branch</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a branch by name or None."""</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_branches</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">b</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Restaurant.add_promotion">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant.add_promotion">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_promotion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">promotion</span><span class="p">:</span> <span class="n">Promotion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a promotion."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_promotions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">promotion</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Restaurant.active_promotions">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant.active_promotions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">active_promotions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Promotion</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return only active promotions."""</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_promotions</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_active</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="Restaurant.branch_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant.branch_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">branch_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of branches."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_branches</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Restaurant.total_tables">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant.total_tables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total number of tables across branches."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">table_count</span><span class="p">()</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_branches</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Restaurant.overall_rating">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant.overall_rating">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overall_rating</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the average rating across all branches."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_branches</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="n">ratings</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">average_rating</span><span class="p">()</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_branches</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">average_rating</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ratings</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Restaurant.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.business.Restaurant.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Restaurant '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">branch_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> branches, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total_tables</span><span class="p">()</span><span class="si">}</span><span class="s2"> tables, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_promotions</span><span class="p">())</span><span class="si">}</span><span class="s2"> active promotions)"</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

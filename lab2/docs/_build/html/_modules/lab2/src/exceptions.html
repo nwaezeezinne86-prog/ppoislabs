@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.exceptions &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.exceptions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.exceptions</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Custom exceptions for the culinary domain."""</span>
+
+
+<div class="viewcode-block" id="CulinaryException">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.CulinaryException">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CulinaryException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Base exception for the culinary domain."""</span></div>
+
+
+
+<div class="viewcode-block" id="RecipeNotFoundError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.RecipeNotFoundError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RecipeNotFoundError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a recipe cannot be found by name or id."""</span></div>
+
+
+
+<div class="viewcode-block" id="IngredientNotFoundError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.IngredientNotFoundError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IngredientNotFoundError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when an ingredient is missing from the catalog or storage."""</span></div>
+
+
+
+<div class="viewcode-block" id="InsufficientIngredientError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.InsufficientIngredientError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InsufficientIngredientError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when there is not enough of an ingredient to cook a dish."""</span></div>
+
+
+
+<div class="viewcode-block" id="InvalidQuantityError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.InvalidQuantityError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidQuantityError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a quantity value is not positive or is malformed."""</span></div>
+
+
+
+<div class="viewcode-block" id="InvalidUnitError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.InvalidUnitError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidUnitError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a measurement unit is not supported."""</span></div>
+
+
+
+<div class="viewcode-block" id="AllergenConflictError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.AllergenConflictError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AllergenConflictError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a dish contains an allergen forbidden for the customer."""</span></div>
+
+
+
+<div class="viewcode-block" id="OvercookedError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.OvercookedError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OvercookedError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a cooking process exceeds its allowed duration."""</span></div>
+
+
+
+<div class="viewcode-block" id="EquipmentUnavailableError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.EquipmentUnavailableError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EquipmentUnavailableError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when required equipment is already in use or broken."""</span></div>
+
+
+
+<div class="viewcode-block" id="EquipmentBrokenError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.EquipmentBrokenError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EquipmentBrokenError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a piece of equipment is marked as out of service."""</span></div>
+
+
+
+<div class="viewcode-block" id="ReservationConflictError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.ReservationConflictError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReservationConflictError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when two reservations overlap for the same table."""</span></div>
+
+
+
+<div class="viewcode-block" id="TableNotFoundError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.TableNotFoundError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TableNotFoundError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a table cannot be found in a restaurant."""</span></div>
+
+
+
+<div class="viewcode-block" id="OrderAlreadyClosedError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.OrderAlreadyClosedError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrderAlreadyClosedError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when an attempt is made to modify a closed order."""</span></div>
+
+
+
+<div class="viewcode-block" id="PaymentFailedError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.PaymentFailedError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PaymentFailedError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a payment transaction fails."""</span></div>
+
+
+
+<div class="viewcode-block" id="InsufficientFundsError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.InsufficientFundsError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InsufficientFundsError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a customer or account does not have enough money."""</span></div>
+
+
+
+<div class="viewcode-block" id="InvalidMenuItemError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.InvalidMenuItemError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidMenuItemError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a menu item cannot be added to a menu."""</span></div>
+
+
+
+<div class="viewcode-block" id="SupplierUnavailableError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.SupplierUnavailableError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SupplierUnavailableError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a supplier cannot fulfil a delivery request."""</span></div>
+
+
+
+<div class="viewcode-block" id="InvalidScheduleError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.InvalidScheduleError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidScheduleError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a shift assignment violates the schedule rules."""</span></div>
+
+
+
+<div class="viewcode-block" id="CertificateExpiredError">
+<a class="viewcode-back" href="../../../index.html#lab2.src.exceptions.CertificateExpiredError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CertificateExpiredError</span><span class="p">(</span><span class="n">CulinaryException</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when an expired certificate is presented."""</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

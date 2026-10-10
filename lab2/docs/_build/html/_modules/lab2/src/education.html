@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.education &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.education</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.education</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Culinary education: schools, courses, lessons, students, certificates."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CertificateExpiredError</span><span class="p">,</span>
+    <span class="n">InvalidScheduleError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.money</span><span class="w"> </span><span class="kn">import</span> <span class="n">Money</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.people</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instructor</span><span class="p">,</span> <span class="n">Student</span>
+
+
+<div class="viewcode-block" id="Certificate">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Certificate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Certificate</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A certificate awarded to a student."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">student</span><span class="p">:</span> <span class="n">Student</span><span class="p">,</span> <span class="n">course_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">issued_on</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_student</span> <span class="o">=</span> <span class="n">student</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_course_name</span> <span class="o">=</span> <span class="n">course_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_issued_on</span> <span class="o">=</span> <span class="n">issued_on</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">student</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Student</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Student who earned the certificate."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_student</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">course_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Course the certificate is for."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_course_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">issued_on</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Issue date."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_issued_on</span>
+
+<div class="viewcode-block" id="Certificate.age_days">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Certificate.age_days">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">age_days</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">today</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return how many days ago the certificate was issued."""</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">today</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_issued_on</span><span class="p">)</span><span class="o">.</span><span class="n">days</span></div>
+
+
+<div class="viewcode-block" id="Certificate.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Certificate.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Certificate '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_course_name</span><span class="si">}</span><span class="s2">' issued to "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_student</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_issued_on</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Lesson">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Lesson">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Lesson</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A single lesson in a course."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">scheduled_on</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">duration_minutes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">instructor</span><span class="p">:</span> <span class="n">Instructor</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">duration_minutes</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Lesson duration must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled_on</span> <span class="o">=</span> <span class="n">scheduled_on</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_duration_minutes</span> <span class="o">=</span> <span class="n">duration_minutes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instructor</span> <span class="o">=</span> <span class="n">instructor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attended</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Student</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Lesson title."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_title</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scheduled_on</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Scheduled date."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled_on</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">instructor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Instructor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Instructor teaching the lesson."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instructor</span>
+
+<div class="viewcode-block" id="Lesson.mark_attended">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Lesson.mark_attended">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mark_attended</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">student</span><span class="p">:</span> <span class="n">Student</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Record that a student attended."""</span>
+        <span class="k">if</span> <span class="n">student</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attended</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_attended</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Lesson.attendance_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Lesson.attendance_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">attendance_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of attendees."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attended</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Lesson.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Lesson.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Lesson '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="si">}</span><span class="s2">' on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_scheduled_on</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_duration_minutes</span><span class="si">}</span><span class="s2"> min by </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_instructor</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Course">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Course">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Course</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A course consisting of multiple lessons."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">price</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span> <span class="n">capacity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Course name must not be empty"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">capacity</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Course capacity must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_price</span> <span class="o">=</span> <span class="n">price</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lessons</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Lesson</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enrolled</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Student</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Course name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">price</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Course price."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_price</span>
+
+<div class="viewcode-block" id="Course.add_lesson">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Course.add_lesson">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_lesson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lesson</span><span class="p">:</span> <span class="n">Lesson</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a lesson to the course."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lessons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lesson</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Course.enroll">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Course.enroll">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">student</span><span class="p">:</span> <span class="n">Student</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Enroll a student; raise if the course is full."""</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_enrolled</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidScheduleError</span><span class="p">(</span><span class="s2">"Course is full"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">student</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enrolled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_enrolled</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Course.enrolled_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Course.enrolled_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enrolled_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of enrolled students."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_enrolled</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Course.lesson_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Course.lesson_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lesson_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of lessons."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lessons</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Course.total_minutes">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Course.total_minutes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_minutes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total duration of all lessons."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">lesson</span><span class="o">.</span><span class="n">_duration_minutes</span> <span class="k">for</span> <span class="n">lesson</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lessons</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Course.is_full">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Course.is_full">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_full</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the course is at capacity."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">enrolled_count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span></div>
+
+
+<div class="viewcode-block" id="Course.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Course.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Course '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lesson_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> lessons, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">enrolled_count</span><span class="p">()</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="si">}</span><span class="s2"> enrolled, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_price</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CulinarySchool">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.CulinarySchool">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CulinarySchool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A culinary school that runs courses and issues certificates."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_courses</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Course</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_certificates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Certificate</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""School name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">address</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""School address."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address</span>
+
+<div class="viewcode-block" id="CulinarySchool.add_course">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.CulinarySchool.add_course">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_course</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">course</span><span class="p">:</span> <span class="n">Course</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a course to the school."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_courses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">course</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CulinarySchool.find_course">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.CulinarySchool.find_course">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_course</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Course</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a course by name or None."""</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_courses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">c</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="CulinarySchool.award_certificate">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.CulinarySchool.award_certificate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">award_certificate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">student</span><span class="p">:</span> <span class="n">Student</span><span class="p">,</span>
+        <span class="n">course_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">issued_on</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Certificate</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Award a certificate; the student must have enrolled in the course."""</span>
+        <span class="n">course</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_course</span><span class="p">(</span><span class="n">course_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">course</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">student</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">course</span><span class="o">.</span><span class="n">_enrolled</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CertificateExpiredError</span><span class="p">(</span><span class="s2">"Student is not enrolled in the course"</span><span class="p">)</span>
+        <span class="n">cert</span> <span class="o">=</span> <span class="n">Certificate</span><span class="p">(</span><span class="n">student</span><span class="p">,</span> <span class="n">course_name</span><span class="p">,</span> <span class="n">issued_on</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_certificates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cert</span><span class="p">)</span>
+        <span class="n">student</span><span class="o">.</span><span class="n">mark_course_completed</span><span class="p">(</span><span class="n">course_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cert</span></div>
+
+
+<div class="viewcode-block" id="CulinarySchool.certificate_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.CulinarySchool.certificate_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">certificate_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of certificates issued."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_certificates</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CulinarySchool.course_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.CulinarySchool.course_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">course_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of courses."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_courses</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CulinarySchool.student_certificates">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.CulinarySchool.student_certificates">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">student_certificates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">student</span><span class="p">:</span> <span class="n">Student</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Certificate</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return all certificates belonging to a student."""</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_certificates</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">student</span> <span class="o">==</span> <span class="n">student</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="CulinarySchool.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.CulinarySchool.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"CulinarySchool '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_address</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">course_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> courses, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">certificate_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> certificates)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Enrollment">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Enrollment">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Enrollment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A record of a student enrolled in a course."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">student</span><span class="p">:</span> <span class="n">Student</span><span class="p">,</span> <span class="n">course</span><span class="p">:</span> <span class="n">Course</span><span class="p">,</span> <span class="n">enrolled_on</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_student</span> <span class="o">=</span> <span class="n">student</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_course</span> <span class="o">=</span> <span class="n">course</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enrolled_on</span> <span class="o">=</span> <span class="n">enrolled_on</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">student</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Student</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Enrolled student."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_student</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">course</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Course</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Course being taken."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_course</span>
+
+<div class="viewcode-block" id="Enrollment.mark_completed">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Enrollment.mark_completed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mark_completed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark the enrollment as completed."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="Enrollment.is_completed">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Enrollment.is_completed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_completed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the enrollment was completed."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span></div>
+
+
+<div class="viewcode-block" id="Enrollment.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Enrollment.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s2">"completed"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="k">else</span> <span class="s2">"in progress"</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_student</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_course</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">] since </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_enrolled_on</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Workshop">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Workshop">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Workshop</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A one-off workshop event."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">day</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span> <span class="n">max_participants</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">max_participants</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Workshop must allow at least one participant"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_day</span> <span class="o">=</span> <span class="n">day</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_participants</span> <span class="o">=</span> <span class="n">max_participants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_participants</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Student</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Workshop title."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_title</span>
+
+<div class="viewcode-block" id="Workshop.register">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Workshop.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">student</span><span class="p">:</span> <span class="n">Student</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Register a participant; raise when full."""</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_participants</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_participants</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidScheduleError</span><span class="p">(</span><span class="s2">"Workshop is full"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">student</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_participants</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_participants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Workshop.participant_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Workshop.participant_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">participant_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of registered participants."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_participants</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Workshop.is_full">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Workshop.is_full">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_full</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the workshop is at capacity."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">participant_count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_participants</span></div>
+
+
+<div class="viewcode-block" id="Workshop.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.education.Workshop.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Workshop '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="si">}</span><span class="s2">' on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_day</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">participant_count</span><span class="p">()</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_participants</span><span class="si">}</span><span class="s2"> participants)"</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

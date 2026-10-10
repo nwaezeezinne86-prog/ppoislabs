@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.analytics &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.analytics</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.analytics</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Analytics: cost, profit, tax and KPI calculations for the culinary domain."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidQuantityError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.money</span><span class="w"> </span><span class="kn">import</span> <span class="n">Money</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.recipes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Recipe</span>
+
+<span class="n">DEFAULT_TAX_PERCENT</span> <span class="o">=</span> <span class="mf">20.0</span>
+<span class="n">DEFAULT_PROFIT_MARGIN</span> <span class="o">=</span> <span class="mf">0.25</span>
+
+
+<div class="viewcode-block" id="CostCalculator">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.CostCalculator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CostCalculator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Computes costs of recipes and menus."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tax_percent</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_TAX_PERCENT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tax_percent</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidQuantityError</span><span class="p">(</span><span class="s2">"Tax percent must be non-negative"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tax_percent</span> <span class="o">=</span> <span class="n">tax_percent</span>
+
+<div class="viewcode-block" id="CostCalculator.base_cost">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.CostCalculator.base_cost">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">base_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="n">Recipe</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the raw ingredient cost of a recipe."""</span>
+        <span class="k">return</span> <span class="n">recipe</span><span class="o">.</span><span class="n">total_cost</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CostCalculator.cost_with_tax">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.CostCalculator.cost_with_tax">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cost_with_tax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="n">Recipe</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the recipe cost including tax."""</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tax_percent</span> <span class="o">/</span> <span class="mf">100.0</span>
+        <span class="k">return</span> <span class="n">recipe</span><span class="o">.</span><span class="n">total_cost</span><span class="p">()</span> <span class="o">*</span> <span class="n">factor</span></div>
+
+
+<div class="viewcode-block" id="CostCalculator.cost_per_serving_with_tax">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.CostCalculator.cost_per_serving_with_tax">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cost_per_serving_with_tax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="n">Recipe</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the taxed cost of one serving."""</span>
+        <span class="n">per_serving</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_with_tax</span><span class="p">(</span><span class="n">recipe</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">per_serving</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">recipe</span><span class="o">.</span><span class="n">servings</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CostCalculator.compare">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.CostCalculator.compare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipe_a</span><span class="p">:</span> <span class="n">Recipe</span><span class="p">,</span> <span class="n">recipe_b</span><span class="p">:</span> <span class="n">Recipe</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the name of the cheaper recipe."""</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">recipe_a</span><span class="o">.</span><span class="n">total_cost</span><span class="p">()</span><span class="o">.</span><span class="n">amount_minor</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">recipe_b</span><span class="o">.</span><span class="n">total_cost</span><span class="p">()</span><span class="o">.</span><span class="n">amount_minor</span>
+        <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">recipe_a</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">recipe_b</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="s2">"equal"</span></div>
+
+
+<div class="viewcode-block" id="CostCalculator.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.CostCalculator.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"CostCalculator (tax </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tax_percent</span><span class="si">}</span><span class="s2">%)"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ProfitAnalyzer">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ProfitAnalyzer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProfitAnalyzer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Calculates profit and margins for recipes and menus."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_PROFIT_MARGIN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">target_margin</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidQuantityError</span><span class="p">(</span><span class="s2">"Target margin must be in [0, 1)"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target_margin</span> <span class="o">=</span> <span class="n">target_margin</span>
+
+<div class="viewcode-block" id="ProfitAnalyzer.suggested_price">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ProfitAnalyzer.suggested_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">suggested_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="n">Recipe</span><span class="p">,</span> <span class="n">cost</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a price that yields the target margin."""</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_margin</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cost</span> <span class="o">*</span> <span class="n">factor</span></div>
+
+
+<div class="viewcode-block" id="ProfitAnalyzer.profit">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ProfitAnalyzer.profit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">profit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span> <span class="n">price</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return profit = price - cost."""</span>
+        <span class="k">return</span> <span class="n">price</span> <span class="o">-</span> <span class="n">cost</span></div>
+
+
+<div class="viewcode-block" id="ProfitAnalyzer.margin">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ProfitAnalyzer.margin">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">margin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span> <span class="n">price</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return margin = (price - cost) / price, 0 if price is zero."""</span>
+        <span class="k">if</span> <span class="n">price</span><span class="o">.</span><span class="n">is_zero</span><span class="p">():</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">price</span><span class="o">.</span><span class="n">amount_minor</span> <span class="o">-</span> <span class="n">cost</span><span class="o">.</span><span class="n">amount_minor</span><span class="p">)</span> <span class="o">/</span> <span class="n">price</span><span class="o">.</span><span class="n">amount_minor</span></div>
+
+
+<div class="viewcode-block" id="ProfitAnalyzer.meets_target">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ProfitAnalyzer.meets_target">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">meets_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span> <span class="n">price</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if margin meets the target."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">price</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_margin</span></div>
+
+
+<div class="viewcode-block" id="ProfitAnalyzer.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ProfitAnalyzer.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"ProfitAnalyzer (target margin </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_target_margin</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">)"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TaxCalculator">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.TaxCalculator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TaxCalculator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Applies a tax rate to monetary amounts."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate_percent</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rate_percent</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidQuantityError</span><span class="p">(</span><span class="s2">"Tax rate must be non-negative"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rate_percent</span> <span class="o">=</span> <span class="n">rate_percent</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rate_percent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Tax rate in percent."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rate_percent</span>
+
+<div class="viewcode-block" id="TaxCalculator.apply">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.TaxCalculator.apply">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the amount with tax added."""</span>
+        <span class="k">return</span> <span class="n">amount</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rate_percent</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaxCalculator.of">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.TaxCalculator.of">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the tax portion of the amount."""</span>
+        <span class="k">return</span> <span class="n">amount</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rate_percent</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaxCalculator.strip">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.TaxCalculator.strip">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">strip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount_with_tax</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the amount without tax."""</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rate_percent</span> <span class="o">/</span> <span class="mf">100.0</span>
+        <span class="k">return</span> <span class="n">amount_with_tax</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">factor</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TaxCalculator.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.TaxCalculator.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"TaxCalculator (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rate_percent</span><span class="si">}</span><span class="s2">%)"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Metric">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.Metric">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Metric</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A single named metric with a numeric value."""</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+
+<div class="viewcode-block" id="Metric.is_positive">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.Metric.is_positive">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_positive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the value is strictly positive."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="Metric.as_str">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.Metric.as_str">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a formatted string."""</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">g</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MetricsReport">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.MetricsReport">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MetricsReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A bundle of named metrics with basic aggregation."""</span>
+
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">metrics</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MetricsReport.add">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.MetricsReport.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a metric."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetricsReport.find">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.MetricsReport.find">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metric</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a metric by name or None."""</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">m</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="MetricsReport.total">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.MetricsReport.total">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the sum of all values."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetricsReport.average">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.MetricsReport.average">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">average</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the average value, 0 if there are no metrics."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MetricsReport.positive_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.MetricsReport.positive_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">positive_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return how many metrics have a strictly positive value."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">is_positive</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="MetricsReport.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.MetricsReport.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"MetricsReport '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">' (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span><span class="si">}</span><span class="s2"> metrics)"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PerformanceMetric">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.PerformanceMetric">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PerformanceMetric</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A simple time-series of performance values."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Metric name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+<div class="viewcode-block" id="PerformanceMetric.record">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.PerformanceMetric.record">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Append a value."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PerformanceMetric.latest">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.PerformanceMetric.latest">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">latest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the latest value, 0 if there are none."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PerformanceMetric.average">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.PerformanceMetric.average">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">average</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the average value, 0 if there are none."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PerformanceMetric.peak">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.PerformanceMetric.peak">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">peak</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the maximum value, 0 if there are none."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PerformanceMetric.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.PerformanceMetric.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"PerformanceMetric '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">' "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">)</span><span class="si">}</span><span class="s2"> records, avg </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">average</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FuelConsumption">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.FuelConsumption">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FuelConsumption</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Tracks fuel consumption per distance for delivery vehicles."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">litres_per_100km</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">litres_per_100km</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidQuantityError</span><span class="p">(</span><span class="s2">"Consumption must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_litres_per_100km</span> <span class="o">=</span> <span class="n">litres_per_100km</span>
+
+<div class="viewcode-block" id="FuelConsumption.litres_for">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.FuelConsumption.litres_for">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">litres_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_km</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return litres needed for a distance."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_litres_per_100km</span> <span class="o">*</span> <span class="n">distance_km</span> <span class="o">/</span> <span class="mf">100.0</span></div>
+
+
+<div class="viewcode-block" id="FuelConsumption.cost_for">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.FuelConsumption.cost_for">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cost_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_km</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">price_per_litre</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return money spent on fuel for a trip."""</span>
+        <span class="k">return</span> <span class="n">price_per_litre</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">litres_for</span><span class="p">(</span><span class="n">distance_km</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FuelConsumption.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.FuelConsumption.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"FuelConsumption (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_litres_per_100km</span><span class="si">}</span><span class="s2"> L/100km)"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TrafficInfo">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.TrafficInfo">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TrafficInfo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Average speed on a route."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">average_speed_kmh</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">distance_km</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">average_speed_kmh</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidQuantityError</span><span class="p">(</span><span class="s2">"Average speed must be positive"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">distance_km</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidQuantityError</span><span class="p">(</span><span class="s2">"Distance must be non-negative"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_average_speed_kmh</span> <span class="o">=</span> <span class="n">average_speed_kmh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_km</span> <span class="o">=</span> <span class="n">distance_km</span>
+
+<div class="viewcode-block" id="TrafficInfo.travel_hours">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.TrafficInfo.travel_hours">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">travel_hours</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return estimated travel time in hours."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_km</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_km</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_average_speed_kmh</span></div>
+
+
+<div class="viewcode-block" id="TrafficInfo.is_slow">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.TrafficInfo.is_slow">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_slow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if traffic is below 20 km/h."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_average_speed_kmh</span> <span class="o">&lt;</span> <span class="mf">20.0</span></div>
+
+
+<div class="viewcode-block" id="TrafficInfo.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.TrafficInfo.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"TrafficInfo (avg </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_average_speed_kmh</span><span class="si">}</span><span class="s2"> km/h, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_distance_km</span><span class="si">}</span><span class="s2"> km -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">travel_hours</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> h)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ExpenseTracker">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ExpenseTracker">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExpenseTracker</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Accumulates expenses by category."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_by_category</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Money</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="ExpenseTracker.add">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ExpenseTracker.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add an expense to a category."""</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_category</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">category</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">current</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_by_category</span><span class="p">[</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="n">amount</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_by_category</span><span class="p">[</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="n">current</span> <span class="o">+</span> <span class="n">amount</span></div>
+
+
+<div class="viewcode-block" id="ExpenseTracker.total">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ExpenseTracker.total">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the sum of all expenses."""</span>
+        <span class="n">total</span><span class="p">:</span> <span class="n">Money</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">amount</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_category</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">amount</span> <span class="k">if</span> <span class="n">total</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">total</span> <span class="o">+</span> <span class="n">amount</span>
+        <span class="k">return</span> <span class="n">total</span> <span class="k">if</span> <span class="n">total</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Money</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ExpenseTracker.category_total">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ExpenseTracker.category_total">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">category_total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total for one category."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_category</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">category</span><span class="p">,</span> <span class="n">Money</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ExpenseTracker.category_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ExpenseTracker.category_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">category_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return how many categories have been used."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_by_category</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ExpenseTracker.top_category">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ExpenseTracker.top_category">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">top_category</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the category with the largest total, or '' if empty."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_category</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">""</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_by_category</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">kv</span><span class="p">:</span> <span class="n">kv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">amount_minor</span><span class="p">,</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ExpenseTracker.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ExpenseTracker.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"ExpenseTracker (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">category_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> categories, "</span>
+            <span class="sa">f</span><span class="s2">"total </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ReportGenerator">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ReportGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReportGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Builds human-readable reports from metrics."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ReportGenerator.add_line">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ReportGenerator.add_line">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Append a line to the report."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ReportGenerator.add_metric">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ReportGenerator.add_metric">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Append a metric line to the report."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">as_str</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="ReportGenerator.line_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ReportGenerator.line_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">line_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of lines."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ReportGenerator.is_empty">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ReportGenerator.is_empty">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the report has no lines."""</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span></div>
+
+
+<div class="viewcode-block" id="ReportGenerator.render">
+<a class="viewcode-back" href="../../../index.html#lab2.src.analytics.ReportGenerator.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the full report as text."""</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_title</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">header</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">body</span> <span class="k">else</span> <span class="n">header</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

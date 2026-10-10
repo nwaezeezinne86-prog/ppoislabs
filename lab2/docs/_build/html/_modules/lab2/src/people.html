@@ -1,0 +1,668 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lab2.src.people &mdash; Lab2 - Culinary Domain 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Lab2 - Culinary Domain
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lab2 - Culinary Domain</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lab2.src.people</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lab2.src.people</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""People in the culinary domain: chefs, cooks, waiters, customers, critics."""</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.allergens</span><span class="w"> </span><span class="kn">import</span> <span class="n">AllergenSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CertificateExpiredError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.money</span><span class="w"> </span><span class="kn">import</span> <span class="n">Money</span>
+
+
+<div class="viewcode-block" id="Person">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Person">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Base class for everyone in the domain."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">first_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">last_name</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"First and last name must not be empty"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first_name</span> <span class="o">=</span> <span class="n">first_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_name</span> <span class="o">=</span> <span class="n">last_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_birth_date</span> <span class="o">=</span> <span class="n">birth_date</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">first_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""First name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">last_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Last name."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">birth_date</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Date of birth."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birth_date</span>
+
+<div class="viewcode-block" id="Person.full_name">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Person.full_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return 'First Last'."""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_name</span><span class="si">}</span><span class="s2">"</span></div>
+
+
+<div class="viewcode-block" id="Person.age">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Person.age">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">age</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">today</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the age in full years."""</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birth_date</span><span class="o">.</span><span class="n">year</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">today</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">today</span><span class="o">.</span><span class="n">day</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_birth_date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birth_date</span><span class="o">.</span><span class="n">day</span><span class="p">):</span>
+            <span class="n">years</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">years</span></div>
+
+
+<div class="viewcode-block" id="Person.initials">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Person.initials">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return initials, e.g. 'AB'."""</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_name</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_name</span><span class="p">[:</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Person</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birth_date</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_birth_date</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birth_date</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_name</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_name</span><span class="si">!r}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="Employee">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Employee">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Employee</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A person who works for the restaurant."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">hire_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">salary</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hire_date</span> <span class="o">=</span> <span class="n">hire_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_salary</span> <span class="o">=</span> <span class="n">salary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">salary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Money</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Monthly salary."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_salary</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hire_date</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Date the employee was hired."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hire_date</span>
+
+<div class="viewcode-block" id="Employee.is_active">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Employee.is_active">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True while the employee works here."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span></div>
+
+
+<div class="viewcode-block" id="Employee.terminate">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Employee.terminate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark the employee as inactive."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Employee.years_of_service">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Employee.years_of_service">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">years_of_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">today</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return full years of service."""</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hire_date</span><span class="o">.</span><span class="n">year</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">today</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">today</span><span class="o">.</span><span class="n">day</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hire_date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hire_date</span><span class="o">.</span><span class="n">day</span><span class="p">):</span>
+            <span class="n">years</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">years</span></div>
+
+
+<div class="viewcode-block" id="Employee.give_raise">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Employee.give_raise">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">give_raise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percent</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Increase the salary by ``percent`` %."""</span>
+        <span class="k">if</span> <span class="n">percent</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Raise percent must be non-negative"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_salary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_salary</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">percent</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_first_name</span><span class="si">!r}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_name</span><span class="si">!r}</span><span class="s2">, active=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Cook">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Cook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Cook</span><span class="p">(</span><span class="n">Employee</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A cook with a set of skills."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">hire_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">salary</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span>
+        <span class="n">specialty</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">,</span> <span class="n">hire_date</span><span class="p">,</span> <span class="n">salary</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_specialty</span> <span class="o">=</span> <span class="n">specialty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skills</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Cook.add_skill">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Cook.add_skill">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_skill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skill</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Register a new skill."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skills</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">skill</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Cook.has_skill">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Cook.has_skill">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_skill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skill</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the cook has the given skill."""</span>
+        <span class="k">return</span> <span class="n">skill</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skills</span></div>
+
+
+<div class="viewcode-block" id="Cook.skill_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Cook.skill_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">skill_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of skills."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_skills</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Cook.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Cook.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a one-line description."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Cook </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_specialty</span><span class="si">}</span><span class="s2">), "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skill_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> skills"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Chef">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Chef">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Chef</span><span class="p">(</span><span class="n">Cook</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A chef who can run a kitchen."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">hire_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">salary</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span>
+        <span class="n">specialty</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">michelin_stars</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">,</span> <span class="n">hire_date</span><span class="p">,</span> <span class="n">salary</span><span class="p">,</span> <span class="n">specialty</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_michelin_stars</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">michelin_stars</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_signature_dishes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Chef.add_signature_dish">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Chef.add_signature_dish">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_signature_dish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a signature dish name."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_signature_dishes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Chef.has_michelin_star">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Chef.has_michelin_star">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_michelin_star</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the chef has at least one Michelin star."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_michelin_stars</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="Chef.signature_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Chef.signature_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signature_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of signature dishes."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signature_dishes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Chef.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Chef.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return a one-line description."""</span>
+        <span class="n">stars</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">", </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_michelin_stars</span><span class="si">}</span><span class="s2"> star(s)"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_michelin_stars</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Chef </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_specialty</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">stars</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SousChef">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.SousChef">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SousChef</span><span class="p">(</span><span class="n">Chef</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Second-in-command in the kitchen."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">hire_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">salary</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span>
+        <span class="n">specialty</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">michelin_stars</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">,</span> <span class="n">hire_date</span><span class="p">,</span> <span class="n">salary</span><span class="p">,</span> <span class="n">specialty</span><span class="p">,</span>
+            <span class="n">michelin_stars</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_manages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cook</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="SousChef.assign_cook">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.SousChef.assign_cook">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">assign_cook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cook</span><span class="p">:</span> <span class="n">Cook</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Put a cook under this sous-chef."""</span>
+        <span class="k">if</span> <span class="n">cook</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_manages</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_manages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cook</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SousChef.team_size">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.SousChef.team_size">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">team_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of cooks managed."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_manages</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Waiter">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Waiter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Waiter</span><span class="p">(</span><span class="n">Employee</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A waiter serving customers."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">hire_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">salary</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span>
+        <span class="n">section</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">,</span> <span class="n">hire_date</span><span class="p">,</span> <span class="n">salary</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section</span> <span class="o">=</span> <span class="n">section</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tables_served</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Waiter.serve_table">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Waiter.serve_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">serve_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Increment the counter of served tables."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tables_served</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Waiter.tables_served">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Waiter.tables_served">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tables_served</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total number of served tables."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables_served</span></div>
+
+
+<div class="viewcode-block" id="Waiter.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Waiter.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Waiter </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> (section </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_section</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tables_served</span><span class="si">}</span><span class="s2"> tables)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Bartender">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Bartender">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Bartender</span><span class="p">(</span><span class="n">Employee</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A bartender with a list of cocktails on the menu."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">hire_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">salary</span><span class="p">:</span> <span class="n">Money</span><span class="p">,</span>
+        <span class="n">bar_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">,</span> <span class="n">hire_date</span><span class="p">,</span> <span class="n">salary</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bar_name</span> <span class="o">=</span> <span class="n">bar_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cocktails</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Bartender.add_cocktail">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Bartender.add_cocktail">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cocktail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Register a cocktail the bartender can mix."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cocktails</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Bartender.can_mix">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Bartender.can_mix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">can_mix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the bartender can mix the cocktail."""</span>
+        <span class="k">return</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cocktails</span></div>
+
+
+<div class="viewcode-block" id="Bartender.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Bartender.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Bartender </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_bar_name</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cocktails</span><span class="p">)</span><span class="si">}</span><span class="s2"> cocktails)"</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Instructor">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Instructor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Instructor</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""An instructor who teaches culinary classes."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">specialization</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">certificate_expiry</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_specialization</span> <span class="o">=</span> <span class="n">specialization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_certificate_expiry</span> <span class="o">=</span> <span class="n">certificate_expiry</span>
+
+<div class="viewcode-block" id="Instructor.certificate_valid">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Instructor.certificate_valid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">certificate_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">today</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the certificate is still valid."""</span>
+        <span class="k">return</span> <span class="n">today</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_certificate_expiry</span></div>
+
+
+<div class="viewcode-block" id="Instructor.assert_certificate">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Instructor.assert_certificate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">assert_certificate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">today</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Raise CertificateExpiredError if the certificate has expired."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">certificate_valid</span><span class="p">(</span><span class="n">today</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">CertificateExpiredError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Instructor </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> certificate expired"</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Instructor.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Instructor.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Instructor </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_specialization</span><span class="si">}</span><span class="s2">)"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Customer">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Customer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Customer</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A restaurant customer with dietary preferences."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">forbidden_allergens</span><span class="p">:</span> <span class="n">AllergenSet</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">vegetarian</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">vegan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forbidden</span> <span class="o">=</span> <span class="n">forbidden_allergens</span> <span class="ow">or</span> <span class="n">AllergenSet</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vegetarian</span> <span class="o">=</span> <span class="n">vegetarian</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vegan</span> <span class="o">=</span> <span class="n">vegan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_orders_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forbidden_allergens</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllergenSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Allergens the customer cannot eat."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forbidden</span>
+
+<div class="viewcode-block" id="Customer.is_vegetarian">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Customer.is_vegetarian">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_vegetarian</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True for vegetarian customers."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vegetarian</span></div>
+
+
+<div class="viewcode-block" id="Customer.is_vegan">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Customer.is_vegan">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_vegan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True for vegan customers."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vegan</span></div>
+
+
+<div class="viewcode-block" id="Customer.register_order">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Customer.register_order">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Record that the customer has placed one more order."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_orders_count</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Customer.orders_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Customer.orders_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orders_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the total number of orders placed."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orders_count</span></div>
+
+
+<div class="viewcode-block" id="Customer.can_eat">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Customer.can_eat">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">can_eat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allergens</span><span class="p">:</span> <span class="n">AllergenSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the given allergen set is compatible with the customer."""</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">allergens</span><span class="o">.</span><span class="n">intersects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_forbidden</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Customer.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Customer.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">diet</span> <span class="o">=</span> <span class="s2">"vegan"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vegan</span> <span class="k">else</span> <span class="p">(</span>
+            <span class="s2">"vegetarian"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vegetarian</span> <span class="k">else</span> <span class="s2">"regular"</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Customer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">diet</span><span class="si">}</span><span class="s2">)"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Critic">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Critic">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Critic</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A restaurant critic who writes reviews."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">publication</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_publication</span> <span class="o">=</span> <span class="n">publication</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reviews_written</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Critic.register_review">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Critic.register_review">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_review</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Record that the critic wrote a review."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reviews_written</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Critic.reviews_written">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Critic.reviews_written">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reviews_written</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the number of reviews written."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reviews_written</span></div>
+
+
+<div class="viewcode-block" id="Critic.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Critic.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Critic </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_publication</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Student">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Student">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Student</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A student of a culinary school."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">birth_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+        <span class="n">enrollment_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">birth_date</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enrollment_date</span> <span class="o">=</span> <span class="n">enrollment_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_completed_courses</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Student.mark_course_completed">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Student.mark_course_completed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mark_course_completed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">course_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark a course as completed."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_completed_courses</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">course_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Student.completed_count">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Student.completed_count">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">completed_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return how many courses the student completed."""</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_completed_courses</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Student.has_completed">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Student.has_completed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_completed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">course_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the student completed the given course."""</span>
+        <span class="k">return</span> <span class="n">course_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed_courses</span></div>
+
+
+<div class="viewcode-block" id="Student.describe">
+<a class="viewcode-back" href="../../../index.html#lab2.src.people.Student.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Student </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">completed_count</span><span class="p">()</span><span class="si">}</span><span class="s2"> courses)"</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
