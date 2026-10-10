@@ -7,7 +7,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(DOCS_DIR, ".."))
 sys.path.insert(0, PROJECT_ROOT)
 
 project = "Fitness Tracker (Lab 3)"
-author = "[ФИО]"
+author = "[Нваезе Э.Р.]"
 release = "1.0.0"
 language = "ru"
 
