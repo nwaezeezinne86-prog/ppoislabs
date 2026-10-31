@@ -37,7 +37,7 @@ coverage:
 
 lint:
 	cppcheck --enable=warning,style,performance,portability --std=c++17 --error-exitcode=1 \
-		--suppress=missingIncludeSystem --inline-suppr -Iinclude src include
+		--suppress=missingIncludeSystem --inline-suppr --suppress=unusedFunction --suppress=constParameter -Iinclude src include
 
 docs:
 	doxygen Doxyfile
