@@ -1,0 +1,53 @@
+name: lab4
+
+on:
+  push:
+    branches: [main]
+    tags: ['lab4-v*']
+  pull_request:
+    paths: ['lab4/**', '.github/workflows/lab4.yml']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lab4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y g++ make cppcheck doxygen
+      - name: Static analysis (cppcheck)
+        run: make lint
+      - name: Build
+        run: make
+      - name: Unit tests with sanitizers
+        run: >
+          g++ -std=c++17 -O1 -g -fsanitize=address,undefined -Iinclude -Itests
+          src/menu.cpp tests/test_main.cpp tests/test_sorting.cpp tests/test_graph.cpp tests/test_menu.cpp
+          -o build/tests_sanitized && ./build/tests_sanitized
+      - name: Coverage (fails below 90 %)
+        run: make coverage
+      - name: Documentation
+        run: make docs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs
+          path: lab4/docs/html
+
+  release:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/lab4-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build release binary
+        run: |
+          sudo apt-get update && sudo apt-get install -y g++ make
+          make -C lab4
+          cd lab4/build && tar czf ../../lab4-linux-x64.tar.gz lab4
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: lab4-linux-x64.tar.gz

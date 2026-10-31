@@ -24,3 +24,13 @@ dist/
 build/
 .pytest_cache/
 .coverage
+
+# C++ (Lab 4)
+lab4/build/
+lab4/docs/html/
+*.o
+*.obj
+*.exe
+*.out
+*.gcda
+*.gcno
