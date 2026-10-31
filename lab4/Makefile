@@ -1,6 +1,4 @@
-lint:
-	cppcheck --enable=warning,style,performance,portability --std=c++17 --error-exitcode=1 \
-		--suppress=missingIncludeSystem --inline-suppr --suppress=unusedFunction --suppress=constParameter -Iinclude src include# Lab 4 build: `make` builds the app, `make test` runs unit tests, `make coverage` checks >= 90 % line coverage,
+# Lab 4 build: `make` builds the app, `make test` runs unit tests, `make coverage` checks >= 90 % line coverage,
 # `make lint` runs cppcheck, `make docs` builds Doxygen documentation.
 CXX      ?= g++
 STD      := -std=c++17
